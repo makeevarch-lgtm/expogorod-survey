@@ -1,35 +1,35 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-10T17:46:50+00:00",
-  "sourceAsOf": "2026-10-10T20:46:17+03:00",
-  "totalResponses": 2,
+  "generatedAt": "2026-10-10T20:59:17+00:00",
+  "sourceAsOf": "2026-10-10T23:58:48+03:00",
+  "totalResponses": 10,
   "interested": {
-    "count": 2,
-    "base": 2,
+    "count": 10,
+    "base": 10,
     "percent": 100.0
   },
   "network": {
-    "base": 2,
+    "base": 9,
     "nodes": [
       {
         "id": "technique",
         "label": "Демонстрация техники в действии",
-        "count": 0
+        "count": 1
       },
       {
         "id": "science",
         "label": "Интерактивная научная выставка",
-        "count": 2
+        "count": 4
       },
       {
         "id": "events",
         "label": "Крупная выставка или фестиваль",
-        "count": 2
+        "count": 7
       },
       {
         "id": "workshops",
         "label": "Лекции и мастер-классы",
-        "count": 2
+        "count": 6
       },
       {
         "id": "sport",
@@ -39,32 +39,86 @@
       {
         "id": "park",
         "label": "Прогулка в лесопарке",
-        "count": 0
+        "count": 5
       },
       {
         "id": "study",
         "label": "Учёба, исследование или профессиональная встреча",
-        "count": 0
+        "count": 5
       }
     ],
     "edges": [
       {
         "source": "events",
+        "target": "park",
+        "count": 3,
+        "jaccard": 0.3333
+      },
+      {
+        "source": "events",
         "target": "science",
-        "count": 2,
-        "jaccard": 1.0
+        "count": 3,
+        "jaccard": 0.375
+      },
+      {
+        "source": "events",
+        "target": "study",
+        "count": 4,
+        "jaccard": 0.5
       },
       {
         "source": "events",
         "target": "workshops",
+        "count": 6,
+        "jaccard": 0.8571
+      },
+      {
+        "source": "park",
+        "target": "science",
         "count": 2,
-        "jaccard": 1.0
+        "jaccard": 0.2857
+      },
+      {
+        "source": "park",
+        "target": "study",
+        "count": 4,
+        "jaccard": 0.6667
+      },
+      {
+        "source": "park",
+        "target": "technique",
+        "count": 1,
+        "jaccard": 0.2
+      },
+      {
+        "source": "park",
+        "target": "workshops",
+        "count": 2,
+        "jaccard": 0.2222
+      },
+      {
+        "source": "science",
+        "target": "study",
+        "count": 1,
+        "jaccard": 0.125
+      },
+      {
+        "source": "science",
+        "target": "technique",
+        "count": 1,
+        "jaccard": 0.25
       },
       {
         "source": "science",
         "target": "workshops",
-        "count": 2,
-        "jaccard": 1.0
+        "count": 3,
+        "jaccard": 0.4286
+      },
+      {
+        "source": "study",
+        "target": "workshops",
+        "count": 3,
+        "jaccard": 0.375
       }
     ]
   },
@@ -75,7 +129,7 @@
     "beforeCutoff": 0,
     "beforeSelectionChange": 2,
     "networkMissing": 0,
-    "networkInvalid": 0,
+    "networkInvalid": 1,
     "interestedMissing": 0,
     "interestedInvalid": 0
   },
