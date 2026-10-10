@@ -1,7 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "checkedAt": "2026-10-10",
-  "scope": "Иллюстративная авторская выборка 8 научных, выставочных и образовательных объектов Москвы. Не полный реестр и не оценка обеспеченности города.",
+  "scope": "Иллюстративная авторская выборка 14 научных, выставочных и образовательных объектов Москвы и ближнего Подмосковья. Не полный реестр и не оценка обеспеченности территории.",
   "coordinateSystem": "WGS84, [longitude, latitude]",
   "coordinateAttribution": "© OpenStreetMap contributors, ODbL 1.0",
   "coordinateLicenseUrl": "https://www.openstreetmap.org/copyright",
@@ -90,7 +90,9 @@
         "https://www.skoltech.ru/contacts"
       ],
       "coordinateSource": "https://www.openstreetmap.org/way/492439134",
-      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница.",
+      "shortName": "Сколтех",
+      "focusReason": "Исследовательский кампус: связь науки, образования и технологических разработок."
     },
     {
       "id": "msu",
@@ -174,6 +176,136 @@
       ],
       "coordinateSource": "https://www.openstreetmap.org/way/1328512570",
       "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "atom",
+      "name": "Музей «АТОМ» · ВДНХ",
+      "coordinates": [
+        37.6247135,
+        55.8324818
+      ],
+      "functions": [
+        "exhibition",
+        "education"
+      ],
+      "description": "Экспозиция атомной отрасли, интерактивный «Атомариум», лабораторные мастер-классы и научно-популярные лекции.",
+      "access": "Посещение экспозиции и программ — по условиям музея; экскурсии и занятия могут требовать отдельных билетов.",
+      "sourceUrl": "https://visit.atom.museum/",
+      "sourceUrls": [
+        "https://visit.atom.museum/",
+        "https://atom.museum/contacts/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/17852201",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница.",
+      "shortName": "Музей «АТОМ»",
+      "focusReason": "Публичное представление науки: экспозиция технологий и интерактивное обучение."
+    },
+    {
+      "id": "experimentanium",
+      "name": "Экспериментаниум",
+      "coordinates": [
+        37.5108289,
+        55.8088254
+      ],
+      "functions": [
+        "exhibition",
+        "education"
+      ],
+      "description": "Интерактивный музей естественных наук: экспонаты, опыты, экскурсии и образовательные программы.",
+      "access": "По билетам; шоу и мастер-классы оплачиваются отдельно.",
+      "sourceUrl": "https://experimentanium.ru/visitors/",
+      "sourceUrls": [
+        "https://experimentanium.ru/visitors/",
+        "https://experimentanium.ru/o-muzee/faq/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/node/3454298446",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "zaryadye-embassy",
+      "name": "Зарядье · Заповедное посольство",
+      "coordinates": [
+        37.6282163,
+        55.7517745
+      ],
+      "functions": [
+        "education"
+      ],
+      "description": "Научно-познавательный центр с лабораторными занятиями, мастер-классами и лекциями. Научно-просветительская функция не приравнивается к исследовательскому институту.",
+      "access": "Условия записи и билеты зависят от занятия; вход в лаборатории — в сопровождении сотрудников.",
+      "sourceUrl": "https://welcome.zaryadyepark.ru/",
+      "sourceUrls": [
+        "https://welcome.zaryadyepark.ru/",
+        "https://www.zaryadyepark.ru/upload/iblock/b72/b7284f01c21173ac6a7122201edf0fb1.pdf",
+        "https://welcome.zaryadyepark.ru/russian_science_day",
+        "https://tickets.zaryadyepark.ru/uploads/files/rules_of_visiting_the_park.pdf"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/node/5022259605",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "manezh",
+      "name": "Центральный Манеж",
+      "coordinates": [
+        37.6123262,
+        55.7534654
+      ],
+      "functions": [
+        "exhibition"
+      ],
+      "description": "Выставочная площадка в центре Москвы с временными экспозициями.",
+      "access": "Условия входа и расписание следует проверять для выбранной выставки.",
+      "sourceUrl": "https://moscowmanege.ru/ru/o-ploshhadke-centralnyj-manezh/",
+      "sourceUrls": [
+        "https://moscowmanege.ru/ru/o-ploshhadke-centralnyj-manezh/",
+        "https://moscowmanege.ru/en/mea-manege/about-us/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/3062892",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "crocus-expo",
+      "name": "Крокус Экспо · Красногорск",
+      "coordinates": [
+        37.3879638,
+        55.8225397
+      ],
+      "functions": [
+        "exhibition"
+      ],
+      "description": "Комплекс отраслевых выставок и деловых мероприятий. Маркер — павильон 1, а не вся территория комплекса.",
+      "access": "Билеты и регистрация зависят от мероприятия.",
+      "sourceUrl": "https://www.crocus-expo.ru/",
+      "sourceUrls": [
+        "https://www.crocus-expo.ru/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/way/23160751",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница.",
+      "shortName": "Крокус Экспо",
+      "focusReason": "Отраслевая выставочная площадка: экспонирование и деловые мероприятия."
+    },
+    {
+      "id": "mipt",
+      "name": "МФТИ · кампус в Долгопрудном",
+      "coordinates": [
+        37.5186681,
+        55.929035
+      ],
+      "functions": [
+        "science",
+        "education"
+      ],
+      "description": "Исследовательский университет с научными лабораториями и образовательными программами. Маркер представляет кампус в Долгопрудном.",
+      "access": "Режим свободного доступа в корпуса в этой выборке не установлен.",
+      "sourceUrl": "https://mipt.ru/sveden/struct",
+      "sourceUrls": [
+        "https://mipt.ru/sveden/struct",
+        "https://pk.mipt.ru/schools/fakt/master_monitoring/",
+        "https://cogmodel.mipt.ru/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/4262145",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
     }
-  ]
+  ],
+  "focusMethod": "Авторские опорные примеры для сравнения трёх направлений проекта: исследовательский кампус, публичная демонстрация науки, отраслевые выставки. Не рейтинг важности, качества, масштаба или посещаемости."
 }
