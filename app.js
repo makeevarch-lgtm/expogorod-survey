@@ -16,6 +16,16 @@ if (formUrl) {
     if (survey.hidden) {
       survey.hidden = false;
       const frame = document.createElement('iframe');
+      // Yandex's embed.js reports each page's height through this message.
+      // Accept messages only from this form's frame and its exact origin.
+      window.addEventListener('message', (event) => {
+        if (event.origin !== formUrl.origin || event.source !== frame.contentWindow) return;
+        try {
+          const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+          const height = Number(data?.['iframe-height']);
+          if (Number.isFinite(height) && height >= 100 && height <= 30000) frame.style.height = `${Math.ceil(height)}px`;
+        } catch (_) { /* Ignore messages that are not the embed height protocol. */ }
+      });
       const embedded = new URL(formUrl);
       embedded.searchParams.set('iframe', '1');
       frame.src = embedded.href;
