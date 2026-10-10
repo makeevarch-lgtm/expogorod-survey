@@ -37,7 +37,7 @@
       track.setAttribute('aria-hidden', 'true');
       const fill = html('span');
       fill.style.width = `${network.base ? 100 * item.count / network.base : 0}%`;
-      fill.style.backgroundColor = colors[index];
+      fill.style.backgroundColor = `${colors[index]}bf`;
       track.append(fill);
       const value = html('div', undefined, 'interest-bar-value');
       value.append(html('strong', `${number(item.count)} из ${number(network.base)}`), html('span', percent(item.count, network.base)));
@@ -60,14 +60,14 @@
       const length = circumference * segment.count / total;
       // A complete circumference is valid even for the 100% / one-segment case.
       graphic.append(svg('circle', {
-        cx: 130, cy: 130, r: 94, fill: 'none', stroke: segment.color, 'stroke-width': 31,
+        cx: 130, cy: 130, r: 94, fill: 'none', stroke: segment.color, 'stroke-width': 31, 'stroke-opacity': .76,
         'stroke-dasharray': `${length} ${Math.max(0, circumference - length)}`,
         'stroke-dashoffset': -offset, transform: 'rotate(-90 130 130)'
       }));
       offset += length;
     });
-    graphic.append(svg('circle', { cx: 130, cy: 130, r: 109.5, fill: 'none', stroke: '#171717', 'stroke-width': .8 }));
-    graphic.append(svg('circle', { cx: 130, cy: 130, r: 78.5, fill: 'none', stroke: '#171717', 'stroke-width': .8 }));
+    graphic.append(svg('circle', { cx: 130, cy: 130, r: 109.5, fill: 'none', stroke: '#171717', 'stroke-width': 1.8 }));
+    graphic.append(svg('circle', { cx: 130, cy: 130, r: 78.5, fill: 'none', stroke: '#171717', 'stroke-width': 1.8 }));
     graphic.append(svg('text', { x: 130, y: 129, 'text-anchor': 'middle', class: 'chart-donut-value' }, total ? center : '—'));
     graphic.append(svg('text', { x: 130, y: 151, 'text-anchor': 'middle', class: 'chart-donut-subline' }, total ? subline : 'нет данных'));
     return graphic;
@@ -76,7 +76,7 @@
   function legendRow(label, value, color, index) {
     const row = html('li');
     const swatch = html('span', index === undefined ? '' : key(index), 'chart-legend-swatch');
-    swatch.style.backgroundColor = color;
+    swatch.style.backgroundColor = `${color}bf`;
     swatch.setAttribute('aria-hidden', 'true');
     row.append(swatch, html('span', label), html('strong', value));
     return row;
@@ -134,7 +134,7 @@
         const count = i === j ? row.count : lookup.get(`${row.id}|${column.id}`) || 0;
         const cell = html('td', network.base ? number(count) : '—');
         if (i === j) cell.className = 'matrix-diagonal';
-        else if (count) cell.style.backgroundColor = `rgba(155,170,250,${.18 + .82 * count / network.base})`;
+        else if (count) cell.style.backgroundColor = `rgba(155,170,250,${.14 + .62 * count / network.base})`;
         cell.setAttribute('aria-label', `${row.label}${i === j ? ': всего выборов' : ` + ${column.label}: выбраны вместе`}. ${network.base ? count : 'Нет данных'}`);
         line.append(cell);
       });

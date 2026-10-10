@@ -39,7 +39,7 @@
     canvas.replaceChildren(svg('title', {id:'network-svg-title'}, 'Связи между поводами приехать'), svg('desc', {id:'network-svg-desc'}, `Ответов на вопрос: ${network.base}. Связей: ${edges.length}. Минимум совместных выборов: ${minimum}. Нумерация узлов соответствует списку рядом; точные значения приведены в таблице ниже.`));
     const defs = svg('defs');
     const glow = svg('filter', {id:'network-glow', x:'-100%',y:'-100%',width:'300%',height:'300%'}); glow.append(svg('feGaussianBlur',{stdDeviation:10})); defs.append(glow); canvas.append(defs);
-    canvas.append(svg('ellipse',{cx:240,cy:200,rx:170,ry:144,fill:'none',stroke:'#999','stroke-width':.65,'stroke-dasharray':'3 6'}));
+    canvas.append(svg('ellipse',{cx:240,cy:200,rx:170,ry:144,fill:'none',stroke:'#999','stroke-width':1,'stroke-dasharray':'3 6'}));
     canvas.append(svg('path',{d:'M15 25h20m-10-10v20M445 375h20m-10-10v20',stroke:'#171717','stroke-width':1}));
     const hasSelections = network.nodes.some((item) => item.count > 0);
     byId('network-empty').hidden = hasSelections;
@@ -52,16 +52,16 @@
       const maxEdge = Math.max(1,...edges.map((edge) => edge.count));
       for (const edge of edges) {
         const a = points.get(edge.source); const b = points.get(edge.target);
-        const line = svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#414cda','stroke-opacity':.48,'stroke-width':1+5*edge.count/maxEdge});
+        const line = svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#414cda','stroke-opacity':.48,'stroke-width':1.5+5*edge.count/maxEdge});
         const labels = network.nodes.filter((item) => [edge.source,edge.target].includes(item.id)).map((item) => item.label);
         line.append(svg('title',{},`${labels.join(' + ')}. Совместных выборов: ${edge.count}; Жаккар ${number(edge.jaccard*100)}%.`)); canvas.append(line);
       }
       const max = Math.max(1,...network.nodes.map((item) => item.count));
       network.nodes.forEach((item,i) => {
         const {x,y} = points.get(item.id); const radius = item.count ? 17+16*Math.sqrt(item.count/max) : 13;
-        if (item.count) canvas.append(svg('circle',{cx:x,cy:y,r:radius+9,fill:palette[item.id],filter:'url(#network-glow)',opacity:.9}));
+        if (item.count) canvas.append(svg('circle',{cx:x,cy:y,r:radius+9,fill:palette[item.id],filter:'url(#network-glow)',opacity:.6}));
         const group = svg('g');
-        group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`),svg('circle',{cx:x,cy:y,r:radius,fill:item.count?palette[item.id]:'#f5f5f5',stroke:'#171717','stroke-width':1.2}),svg('text',{x,y:y+6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
+        group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`),svg('circle',{cx:x,cy:y,r:radius,fill:item.count?palette[item.id]:'#f5f5f5','fill-opacity':item.count ? .72 : 1,stroke:'#171717','stroke-width':1.8}),svg('text',{x,y:y+6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
       });
     }
     const tableMount = byId('network-table'); tableMount.replaceChildren();
@@ -82,7 +82,7 @@
     status.textContent=`${data.totalResponses ? `${number(data.totalResponses)} ${formsWord(data.totalResponses)} в срезе · предварительные данные.` : 'Анкет без известных тестов пока нет — сбор начинается.'} Данные проверены: ${date} МСК. Повторные заполнения возможны: это число анкет, а не разных людей.`;
     byId('network-base').textContent=`Ответов на вопрос: ${number(data.network.base)}. Можно выбрать несколько вариантов.`;
     const list=byId('network-nodes');list.replaceChildren();
-    data.network.nodes.forEach((item,i)=>{const row=node('li');const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.background=palette[item.id];const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');row.append(key,node('span',item.label),count);list.append(row);});
+    data.network.nodes.forEach((item,i)=>{const row=node('li');const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.background=`${palette[item.id]}bf`;const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');row.append(key,node('span',item.label),count);list.append(row);});
     const q=data.quality || {};
     const before=integer(q.beforeSelectionChange)?q.beforeSelectionChange:0;
     if(before) status.textContent += ` До снятия лимитов выбора получено анкет: ${number(before)}. Это нужно учитывать при сравнении интересов.`;
@@ -107,7 +107,7 @@
     const graph=byId('network-svg').cloneNode(true);graph.setAttribute('x',0);graph.setAttribute('y',83);graph.setAttribute('width',480);graph.setAttribute('height',400);exported.append(graph);
     let y=506;
     dataset.network.nodes.forEach((item,i)=>{
-      exported.append(svg('rect',{x:20,y:y-14,width:24,height:24,fill:palette[item.id],stroke:'#171717','stroke-width':1}),text(24,y+2,String(i+1).padStart(2,'0'),11,700));
+      exported.append(svg('rect',{x:20,y:y-14,width:24,height:24,fill:palette[item.id],'fill-opacity':.75,stroke:'#171717','stroke-width':1.5}),text(24,y+2,String(i+1).padStart(2,'0'),11,700));
       const words=item.label.split(' ');let line='';const lines=[];
       words.forEach((word)=>{if((line+' '+word).trim().length>49){lines.push(line);line=word;}else line=(line+' '+word).trim();});if(line)lines.push(line);
       lines.forEach((line,k)=>exported.append(text(54,y+k*14,line,12)));
