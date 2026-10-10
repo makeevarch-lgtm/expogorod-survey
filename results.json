@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-10T17:46:50+00:00",
+  "sourceAsOf": "2026-10-10T20:46:17+03:00",
+  "totalResponses": 2,
+  "interested": {
+    "count": 2,
+    "base": 2,
+    "percent": 100.0
+  },
+  "network": {
+    "base": 2,
+    "nodes": [
+      {
+        "id": "technique",
+        "label": "Демонстрация техники в действии",
+        "count": 0
+      },
+      {
+        "id": "science",
+        "label": "Интерактивная научная выставка",
+        "count": 2
+      },
+      {
+        "id": "events",
+        "label": "Крупная выставка или фестиваль",
+        "count": 2
+      },
+      {
+        "id": "workshops",
+        "label": "Лекции и мастер-классы",
+        "count": 2
+      },
+      {
+        "id": "sport",
+        "label": "Спортивные занятия или соревнования",
+        "count": 0
+      },
+      {
+        "id": "park",
+        "label": "Прогулка в лесопарке",
+        "count": 0
+      },
+      {
+        "id": "study",
+        "label": "Учёба, исследование или профессиональная встреча",
+        "count": 0
+      }
+    ],
+    "edges": [
+      {
+        "source": "events",
+        "target": "science",
+        "count": 2,
+        "jaccard": 1.0
+      },
+      {
+        "source": "events",
+        "target": "workshops",
+        "count": 2,
+        "jaccard": 1.0
+      },
+      {
+        "source": "science",
+        "target": "workshops",
+        "count": 2,
+        "jaccard": 1.0
+      }
+    ]
+  },
+  "quality": {
+    "excludedTests": 1,
+    "duplicates": 0,
+    "missingIds": 0,
+    "beforeCutoff": 0,
+    "beforeSelectionChange": 2,
+    "networkMissing": 0,
+    "networkInvalid": 0,
+    "interestedMissing": 0,
+    "interestedInvalid": 0
+  },
+  "method": {
+    "question": "Что могло бы стать поводом приехать в этот район?",
+    "refresh": "manual-export",
+    "responsesSince": null,
+    "selectionPolicyChangedAt": "2026-10-10T20:46:17+03:00",
+    "versionPolicy": "Все даты выгрузки; ответы до и после отмены лимита выбора могут быть несопоставимы.",
+    "networkBase": "Все корректно ответившие на Q3, включая один ответ «Ничего» или «Трудно сказать».",
+    "interestedBase": "Все корректно ответившие на Q4, включая «Трудно сказать».",
+    "edge": "Количество анкет, в которых оба варианта выбраны вместе.",
+    "normalization": "Jaccard = совместные выборы / анкеты с хотя бы одним из двух вариантов."
+  }
+}
