@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "checkedAt": "2026-10-10",
+  "scope": "Иллюстративная авторская выборка 8 научных, выставочных и образовательных объектов Москвы. Не полный реестр и не оценка обеспеченности города.",
+  "coordinateSystem": "WGS84, [longitude, latitude]",
+  "coordinateAttribution": "© OpenStreetMap contributors, ODbL 1.0",
+  "coordinateLicenseUrl": "https://www.openstreetmap.org/copyright",
+  "items": [
+    {
+      "id": "vdnh-cosmos",
+      "name": "ВДНХ · «Космонавтика и авиация»",
+      "coordinates": [
+        37.6209107,
+        55.8356671
+      ],
+      "functions": [
+        "exhibition",
+        "education"
+      ],
+      "description": "Экспозиция космической техники и организованные экскурсии для школьных групп.",
+      "access": "По билетам; школьные группы — по предварительной записи.",
+      "sourceUrl": "https://vdnh.ru/events/ekskursii-tsentra-kosmonavtika-i-aviatsiya/",
+      "sourceUrls": [
+        "https://vdnh.ru/events/ekskursii-tsentra-kosmonavtika-i-aviatsiya/",
+        "https://vdnh.ru/School-excursions/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/8273120",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "cosmo-museum",
+      "name": "Музей космонавтики",
+      "coordinates": [
+        37.6397485,
+        55.8227898
+      ],
+      "functions": [
+        "exhibition",
+        "education"
+      ],
+      "description": "Музейная экспозиция, учебные дни, инженерные экскурсии и мастер-классы.",
+      "access": "По билетам; условия участия в программах указаны на сайте музея.",
+      "sourceUrl": "https://kosmo-museum.ru/education",
+      "sourceUrls": [
+        "https://kosmo-museum.ru/education",
+        "https://kosmo-museum.ru/",
+        "https://m.kosmo-museum.ru/contacts"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/18440666",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "ges2",
+      "name": "Дом культуры «ГЭС-2»",
+      "coordinates": [
+        37.6127194,
+        55.7426883
+      ],
+      "functions": [
+        "exhibition",
+        "education"
+      ],
+      "description": "Выставочные проекты, публичные лекции, мастер-классы и мастерские.",
+      "access": "Условия посещения зависят от программы; проверяйте регистрацию на сайте.",
+      "sourceUrl": "https://ges-2.org/?areas=public",
+      "sourceUrls": [
+        "https://ges-2.org/?areas=public",
+        "https://ges-2.org/floor-plan",
+        "https://ges-2.org/press-release-spring-2026"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/13573685",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "skoltech",
+      "name": "Сколтех",
+      "coordinates": [
+        37.3595838,
+        55.6990111
+      ],
+      "functions": [
+        "science",
+        "education"
+      ],
+      "description": "Исследовательский университет: лаборатории, магистратура, аспирантура и программы ДПО.",
+      "access": "О визите нужно сообщить заранее для оформления пропуска.",
+      "sourceUrl": "https://www.skoltech.ru/about",
+      "sourceUrls": [
+        "https://www.skoltech.ru/about",
+        "https://www.skoltech.ru/contacts"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/way/492439134",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "msu",
+      "name": "МГУ · кампус на Ленинских горах",
+      "coordinates": [
+        37.5307556,
+        55.7029101
+      ],
+      "functions": [
+        "science",
+        "education"
+      ],
+      "description": "Университетский кампус с научными исследованиями и программами высшего образования. Маркер — главное здание.",
+      "access": "Режим свободного доступа в корпуса в этой выборке не установлен.",
+      "sourceUrl": "https://www.phys.msu.ru/rus/research/areas/",
+      "sourceUrls": [
+        "https://www.phys.msu.ru/rus/research/areas/",
+        "https://fpo.msu.ru/index.php/programmy-fpo/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/3433571",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "kurchatov",
+      "name": "Курчатовский институт",
+      "coordinates": [
+        37.4744498,
+        55.7962473
+      ],
+      "functions": [
+        "science"
+      ],
+      "description": "Научно-исследовательская площадка в Щукине; исследования материалов и природоподобных технологий.",
+      "access": "Режим посещения в этой выборке не установлен; свободный вход не предполагается.",
+      "sourceUrl": "https://nrcki.ru/product/nrcki/molekulyarnaya-genetika-pro-i-ehukariot-47648.shtml",
+      "sourceUrls": [
+        "https://nrcki.ru/product/nrcki/molekulyarnaya-genetika-pro-i-ehukariot-47648.shtml",
+        "https://rc.nrcki.ru/pages/main/contacts/index.shtml",
+        "https://nrcki.ru/product/nrcki/KVA-53430.shtml"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/3146511",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "misis",
+      "name": "Университет МИСИС",
+      "coordinates": [
+        37.6077966,
+        55.7279401
+      ],
+      "functions": [
+        "science",
+        "education"
+      ],
+      "description": "Университетский кампус: образование, исследования материалов и инженерные разработки.",
+      "access": "Режим свободного доступа в корпуса в этой выборке не установлен.",
+      "sourceUrl": "https://misis.ru/university/about/",
+      "sourceUrls": [
+        "https://misis.ru/university/about/",
+        "https://misis.ru/university/contacts/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/relation/1480037",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    },
+    {
+      "id": "timiryazev-expo",
+      "name": "Тимирязев Центр",
+      "coordinates": [
+        37.5668254,
+        55.8319731
+      ],
+      "functions": [
+        "exhibition"
+      ],
+      "description": "Выставочный комплекс с постоянными экспозициями и календарём деловых мероприятий.",
+      "access": "Территория и постоянные экспозиции — бесплатно в установленные часы; мероприятия имеют отдельные условия.",
+      "sourceUrl": "https://texpo.ru/company/",
+      "sourceUrls": [
+        "https://texpo.ru/company/",
+        "https://texpo.ru/company/kak-dobratsya/"
+      ],
+      "coordinateSource": "https://www.openstreetmap.org/way/1328512570",
+      "coordinateMethod": "Репрезентативная точка объекта OpenStreetMap, полученная через Nominatim; не вход и не кадастровая граница."
+    }
+  ]
+}

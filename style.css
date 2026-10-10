@@ -34,3 +34,6 @@ h1{font-size:clamp(40px,4.9vw,68px);font-weight:700;line-height:.99;letter-spaci
 .icon{stroke-width:1.9}
 .network-panel{border-width:1.5px}.network-heading,.network-caption{border-color:#171717;border-width:1.5px}.network-key{border-left-width:1.5px}.node-key{border-width:1.5px}.art{border-width:1.5px}
 @media(max-width:900px){.network-key{border-left:0;border-top-width:1.5px}}
+
+/* 2.9: allow four section links on narrow screens. */
+@media(max-width:640px){.header{flex-wrap:wrap}.header-nav{flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:12px 18px;width:100%}}
