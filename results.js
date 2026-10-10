@@ -59,9 +59,9 @@
       const max = Math.max(1,...network.nodes.map((item) => item.count));
       network.nodes.forEach((item,i) => {
         const {x,y} = points.get(item.id); const radius = item.count ? 17+16*Math.sqrt(item.count/max) : 13;
-        if (item.count) canvas.append(svg('circle',{cx:x,cy:y,r:radius+9,fill:palette[item.id],filter:'url(#network-glow)',opacity:.9}));
-        const group = svg('g');
-        group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`),svg('circle',{cx:x,cy:y,r:radius,fill:item.count?palette[item.id]:'#f5f5f5',stroke:'#171717','stroke-width':1.2}),svg('text',{x,y:y+6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
+        if (item.count) canvas.append(svg('circle',{cx:x,cy:y,r:radius+9,fill:palette[item.id],filter:'url(#network-glow)',opacity:.2}));
+        const group = svg('g'); if(item.count) group.append(svg('circle',{cx:x,cy:y-radius-5,r:3,fill:palette[item.id],stroke:'#171717','stroke-width':.5}));
+        group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`),svg('circle',{cx:x,cy:y,r:radius,fill:'#fff',stroke:'#171717','stroke-width':1.2}),svg('text',{x,y:y+6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
       });
     }
     const tableMount = byId('network-table'); tableMount.replaceChildren();
@@ -82,7 +82,7 @@
     status.textContent=`${data.totalResponses ? `${number(data.totalResponses)} ${formsWord(data.totalResponses)} в срезе · предварительные данные.` : 'Анкет без известных тестов пока нет — сбор начинается.'} Данные проверены: ${date} МСК. Повторные заполнения возможны: это число анкет, а не разных людей.`;
     byId('network-base').textContent=`Ответов на вопрос: ${number(data.network.base)}. Можно выбрать несколько вариантов.`;
     const list=byId('network-nodes');list.replaceChildren();
-    data.network.nodes.forEach((item,i)=>{const row=node('li');const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.background=palette[item.id];const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');row.append(key,node('span',item.label),count);list.append(row);});
+    data.network.nodes.forEach((item,i)=>{const row=node('li');const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.borderBottomColor=palette[item.id];const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');row.append(key,node('span',item.label),count);list.append(row);});
     const q=data.quality || {};
     const before=integer(q.beforeSelectionChange)?q.beforeSelectionChange:0;
     if(before) status.textContent += ` До снятия лимитов выбора получено анкет: ${number(before)}. Это нужно учитывать при сравнении интересов.`;
@@ -106,7 +106,7 @@
     const graph=byId('network-svg').cloneNode(true);graph.setAttribute('x',0);graph.setAttribute('y',83);graph.setAttribute('width',480);graph.setAttribute('height',400);exported.append(graph);
     let y=506;
     dataset.network.nodes.forEach((item,i)=>{
-      exported.append(svg('rect',{x:20,y:y-14,width:24,height:24,fill:palette[item.id],stroke:'#171717','stroke-width':1}),text(24,y+2,String(i+1).padStart(2,'0'),11,700));
+      exported.append(svg('rect',{x:20,y:y-14,width:24,height:24,fill:'#fff',stroke:'#171717','stroke-width':1}),text(24,y+2,String(i+1).padStart(2,'0'),11,700));
       const words=item.label.split(' ');let line='';const lines=[];
       words.forEach((word)=>{if((line+' '+word).trim().length>49){lines.push(line);line=word;}else line=(line+' '+word).trim();});if(line)lines.push(line);
       lines.forEach((line,k)=>exported.append(text(54,y+k*14,line,12)));
