@@ -37,3 +37,8 @@ h1{font-size:clamp(40px,4.9vw,68px);font-weight:700;line-height:.99;letter-spaci
 
 /* 2.9: allow four section links on narrow screens. */
 @media(max-width:640px){.header{flex-wrap:wrap}.header-nav{flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:12px 18px;width:100%}}
+
+/* Plain-language context for the diploma project. */
+.project-intro-link{display:inline-block;margin-top:4px;font-size:13px;color:var(--ink);text-underline-offset:3px}
+.about h3{font-size:14px;text-transform:uppercase;letter-spacing:.2px;margin:24px 0 7px;line-height:1.4}.about h3+p{margin-top:0}
+.about .about-links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:22px;font-size:12px}.about-links a{color:var(--ink);text-underline-offset:3px}
