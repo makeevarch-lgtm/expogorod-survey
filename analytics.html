@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Учебное исследование городского досуга: какие места вы посещаете и что хотели бы видеть рядом.">
+  <meta name="theme-color" content="#414cda">
+  <title>Аналитика — Экспогород</title>
+  <link rel="icon" href="assets/mark.svg?v=2.7" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=2.7">
+  <link rel="stylesheet" href="charts.css?v=2.7">
+  <script src="charts.js?v=2.7" defer></script>
+  <script src="results.js?v=2.7" defer></script>
+</head>
+<body class="analytics-page">
+  <a class="skip" href="#main">Перейти к содержанию</a>
+  <header class="header wrap">
+    <a class="brand" href="./" aria-label="Экспогород — главная"><img src="assets/mark.svg?v=2.7" alt="" width="34" height="34">ЭКСПОГОРОД<span>городской интерес</span></a>
+    <nav class="header-nav" aria-label="Разделы страницы"><a class="about-link" href="./">Опрос</a><a class="about-link" href="analytics.html" aria-current="page">Аналитика</a><a class="about-link" href="./#about">Об исследовании <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main id="main">
+    <section id="results" class="results wrap" aria-labelledby="results-title">
+      <div class="section-top"><div><p class="eyebrow"><span class="badge">01</span> Исследование в цифрах</p><h1 id="results-title">Городской интерес.<br>Результаты исследования.</h1></div><span class="snapshot-label"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#chart"/></svg> Срез ответов</span></div>
+      <p class="results-intro">Здесь собираются общие показатели и сочетания интересов. Они помогут увидеть, какие занятия могут дополнять друг друга в одном месте.</p>
+      <p id="results-status" class="results-status" role="status">Загружаем последний срез исследования…</p>
+      <div class="metrics" aria-label="Основные показатели">
+        <article class="metric"><span class="metric-label"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#people"/></svg> Получено анкет</span><strong id="metric-total">—</strong><p>Без известных тестов. Повторное заполнение разрешено.</p></article>
+        <article class="metric"><span class="metric-label"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#route"/></svg> Хотели бы приехать</span><strong id="metric-interest">—</strong><p id="metric-interest-note">Среди ответивших на этот вопрос.</p></article>
+        <article class="metric"><span class="metric-label"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#network"/></svg> Сочетаний интересов</span><strong id="metric-pairs">—</strong><p>Пар вариантов, выбранных вместе.</p></article>
+      </div>
+      <section class="chart-grid" aria-label="Диаграммы исследования">
+        <article class="chart-panel chart-panel-wide"><h3>01 / Поводы приехать</h3><p>Сколько анкет содержит каждый вариант. Можно было выбрать несколько ответов.</p><div id="interest-bars"><p>Ожидаем данные среза.</p></div></article>
+        <article class="chart-panel"><h3>02 / Желание приехать</h3><p>Положительные и другие ответы на вопрос о посещении.</p><div id="visit-donut"><p>Ожидаем данные среза.</p></div></article>
+        <article class="chart-panel"><h3>03 / Состав выбранных интересов</h3><p>Доли среди всех отмеченных вариантов, а не среди участников.</p><div id="choice-share"><p>Ожидаем данные среза.</p></div></article>
+        <article class="chart-panel chart-panel-wide"><h3>04 / Матрица совместного выбора</h3><p>В ячейке — число анкет с обоими интересами. По диагонали — число выборов самого интереса.</p><div id="interest-matrix"><p>Ожидаем данные среза.</p></div></article>
+      </section>
+      <div class="network-panel">
+        <div class="network-heading"><h3><span class="badge">05</span> Связи между интересами</h3><label class="edge-filter">Показывать связи <select id="network-threshold" disabled><option value="1">от 1 ответа</option><option value="2">от 2 ответов</option><option value="3">от 3 ответов</option><option value="5">от 5 ответов</option></select></label></div>
+        <div class="network-layout"><div class="network-canvas"><svg id="network-svg" viewBox="0 0 480 400" role="img" aria-labelledby="network-svg-title network-svg-desc"><title id="network-svg-title">Связи между поводами приехать</title><desc id="network-svg-desc">Данные загружаются.</desc></svg><div id="network-empty" class="network-empty"><span class="empty-symbol" aria-hidden="true">＋</span><strong>Схема появится вместе с ответами</strong><p>Каждый интерес станет узлом.<br>Совместный выбор — связью.</p></div></div><div class="network-key"><h4>Поводы приехать</h4><p id="network-base" class="network-base">Ожидаем данные</p><ol id="network-nodes" class="network-nodes"></ol><p class="network-help">Размер круга — число выборов.<br>Толщина линии — число совместных выборов.</p></div></div>
+        <div class="network-caption"><span><i class="swatch science"></i> Познание</span><span><i class="swatch events"></i> События</span><span><i class="swatch nature"></i> Активный отдых</span><span class="caption-note">Граф интересов · не карта маршрутов</span></div>
+      </div>
+      <details class="network-details"><summary>Как читать схему и проверять связи <span aria-hidden="true">＋</span></summary><div class="method-grid"><div><h3>Один ответ — несколько интересов</h3><p>Если участник выбрал выставку и прогулку, между этими занятиями возникает связь. Схема строится по вопросу «Что могло бы стать поводом приехать в этот район?».</p><p>Связь показывает совместный выбор, а не причину посещения и не реальный поток людей. Это основа для гипотез о программе территории.</p></div><div><h3>Честные основания</h3><p id="quality-note">Для каждого показателя учитываются только подходящие ответы. Пропущенный вопрос не считается отрицательным ответом.</p><p>В таблице можно сравнить число совместных выборов и коэффициент Жаккара: долю совместных выборов среди участников, выбравших хотя бы один из двух вариантов.</p></div></div><div id="network-table" class="network-table"><p>Связей для сравнения пока нет.</p></div></details>
+      <p class="results-footnote">Это добровольный опрос, а не репрезентативная выборка жителей. Показатели обновляются после выгрузки и проверки ответов; новые отправки не появляются здесь мгновенно. Индивидуальные ответы на сайте не публикуются.</p>
+    </section>
+  </main>
+  <footer class="footer wrap"><span>ЭКСПОГОРОД</span><span>Учебное исследование · 2026</span><a href="#main">Наверх ↑</a></footer>
+  <noscript><p class="wrap">Для диаграмм нужен JavaScript. <a href="results.json">Скачать данные среза</a>.</p></noscript>
+</body>
+</html>

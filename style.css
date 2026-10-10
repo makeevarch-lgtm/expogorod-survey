@@ -20,3 +20,12 @@ h1{font-size:clamp(40px,4.9vw,68px);font-weight:700;line-height:.99;letter-spaci
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 #form-mount,iframe{background:#fff}.survey{background:linear-gradient(#fff,#f7f7f7);padding-inline:24px}.results-status{border-left:3px solid var(--accent);padding:10px 14px;background:#f3f4fc;line-height:1.6}@media(max-width:640px){.survey{padding-inline:8px}}
+
+/* 2.7: flush section bands and a dedicated analytics page. */
+.eyebrow,.hero .eyebrow{align-items:center;line-height:1.4;min-height:29px;padding-block:0}
+.eyebrow>.badge,.hero .eyebrow>.badge{align-self:stretch;display:flex;align-items:center;justify-content:center;margin:0;line-height:1.4;min-height:29px}
+.header-nav .about-link[aria-current="page"]{text-decoration:none;border-bottom:2px solid var(--accent);padding-bottom:4px}
+.analytics-page .results{border-bottom:0}
+.analytics-page h1{font-size:clamp(30px,3.3vw,46px);line-height:1.08;letter-spacing:-1.3px;margin:0 0 20px;max-width:870px}
+.analytics-page .section-top>div{min-width:0;flex:1}
+@media(max-width:640px){.header-nav{gap:9px}.analytics-page h1{font-size:30px;letter-spacing:-.8px}.eyebrow>.badge,.hero .eyebrow>.badge{padding-block:4px}.analytics-page .results{padding-top:32px}}

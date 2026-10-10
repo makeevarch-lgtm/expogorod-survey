@@ -91,6 +91,7 @@
     byId('network-threshold').disabled=!data.network.edges.length;
     download.disabled=!data.network.nodes.some((item)=>item.count>0);
     renderGraph();
+    window.EXPO_CHARTS?.render(data);
   }
   const download = node('button','Скачать схему SVG ↓','primary graph-download');
   download.type='button'; download.disabled=true; download.style.marginTop='16px';
@@ -119,6 +120,7 @@
   });
   byId('network-threshold').addEventListener('change',()=>{if(dataset)renderGraph();});
   fetch('results.json',{cache:'no-store'}).then((response)=>{if(!response.ok)throw new Error('Unavailable snapshot');return response.json();}).then(validate).then(render).catch(()=>{
+    document.querySelectorAll('.chart-panel > div').forEach((el)=>{el.textContent='Проверенный срез недоступен. Диаграмма появится после загрузки данных.';});
     status.textContent='Срез результатов сейчас недоступен. Анкета продолжает работать; показатели появятся после проверки данных.';
     byId('network-svg-desc').textContent='Данные результатов недоступны.';
     byId('network-empty').querySelector('strong').textContent='Ожидаем проверенные данные';

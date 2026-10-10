@@ -1,4 +1,6 @@
 'use strict';
+// Keep previously shared results links working after moving analytics.
+if (window.location.hash === '#results') window.location.replace(new URL('analytics.html', window.location.href).href);
 const start = document.getElementById('start');
 const notice = document.getElementById('availability');
 const survey = document.getElementById('survey');
