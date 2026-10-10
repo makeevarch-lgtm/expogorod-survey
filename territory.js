@@ -57,13 +57,13 @@
   function minimalBasemap(){
     for(const layer of map.getStyle().layers){
       const id=layer.id,source=layer['source-layer'];
-      if(layer.type==='background')map.setPaintProperty(id,'background-color','#f3f3f0');
+      if(layer.type==='background')map.setPaintProperty(id,'background-color','#ffffff');
       if(layer.type==='fill'){
-        const color=source==='water'?'#d5d8db':source==='building'?'#d1d1ce':source==='park'||source==='landcover'?'#e4e5e0':'#ededeb';
-        map.setPaintProperty(id,'fill-color',color);if(layer.paint?.['fill-outline-color'])map.setPaintProperty(id,'fill-outline-color',color);
+        map.setPaintProperty(id,'fill-color','#ffffff');
+        map.setPaintProperty(id,'fill-outline-color',source==='water'?'#bbbbbb':source==='building'?'#b0b0b0':'#e0e0e0');
       }
       if(layer.type==='line'){
-        map.setPaintProperty(id,'line-color',source==='waterway'?'#d5d8db':source==='boundary'?'#cdcdc9':id.includes('casing')?'#dfdfdb':'#fafaf8');
+        map.setPaintProperty(id,'line-color',source==='waterway'?'#bbbbbb':source==='boundary'?'#b5b5b5':id.includes('casing')?'#ffffff':'#c4c4c4');
         map.setPaintProperty(id,'line-opacity',source==='boundary'?.35:.7);
         if(/railway|aeroway|highway_path/.test(id))map.setLayoutProperty(id,'visibility','none');
       }
@@ -71,7 +71,7 @@
         const place=source==='place',majorRoad=id==='highway-name-major';
         if(!place&&!majorRoad||/country|state|village/.test(id)){map.setLayoutProperty(id,'visibility','none');continue;}
         map.setLayoutProperty(id,'text-field',['coalesce',['get','name:ru'],['get','name:nonlatin'],['get','name']]);
-        map.setPaintProperty(id,'text-color','#7c7c78');map.setPaintProperty(id,'text-halo-color','#f3f3f0');map.setPaintProperty(id,'text-halo-width',1);
+        map.setPaintProperty(id,'text-color','#777777');map.setPaintProperty(id,'text-halo-color','#ffffff');map.setPaintProperty(id,'text-halo-width',1);
         if(id==='label_town')map.setLayerZoomRange(id,11,24);
         if(id==='label_other'||majorRoad)map.setLayerZoomRange(id,14,24);
       }
@@ -86,7 +86,7 @@
       try {
         const layers=map.getStyle().layers;const symbol=layers.find(l=>l.type==='symbol');
         minimalBasemap();
-        map.addLayer({id:'expo-buildings',type:'fill-extrusion',source:'openmaptiles','source-layer':'building',minzoom:14,filter:['!=',['get','hide_3d'],true],paint:{'fill-extrusion-color':'#c7c7c3','fill-extrusion-height':['coalesce',['get','render_height'],0],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.72}},symbol?.id);
+        map.addLayer({id:'expo-buildings',type:'fill-extrusion',source:'openmaptiles','source-layer':'building',minzoom:14,filter:['!=',['get','hide_3d'],true],paint:{'fill-extrusion-color':'#ffffff','fill-extrusion-height':['coalesce',['get','render_height'],0],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.9}},symbol?.id);
         map.addSource('expo-ring',{type:'geojson',data:geography});map.addLayer({id:'expo-ring-halo',type:'line',source:'expo-ring',filter:['==',['get','kind'],'ring'],paint:{'line-color':'#bcc6fb','line-width':['interpolate',['linear'],['zoom'],8,6,15,16],'line-opacity':.5,'line-blur':5}});map.addLayer({id:'expo-ring-line',type:'line',source:'expo-ring',filter:['==',['get','kind'],'ring'],paint:{'line-color':'#414cda','line-width':['interpolate',['linear'],['zoom'],8,2,15,3],'line-opacity':.9}});
         marker(center,'ring','Экспериментальное кольцо',null,null,'Кольцо ВНИИЖТ');catalog.items.forEach(i=>marker(i.coordinates,i.id,i.name,i.functions,i.focusReason,i.shortName));map.on('moveend',updateLabels);map.on('resize',updateLabels);ready=true;$('gis-map-status').hidden=true;table();view('moscow');
       }catch(e){$('gis-map-status').hidden=false;$('gis-map-status').textContent='Не удалось отобразить все слои карты. Подборка площадок доступна в таблице.';}
@@ -96,5 +96,5 @@
   document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{if(!catalog)return;filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));table();view('moscow');}));
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
   $('gis-3d').addEventListener('click',()=>{tilted=!tilted;$('gis-3d').setAttribute('aria-pressed',String(tilted));if(ready)map.easeTo({pitch:tilted?55:0,bearing:tilted?-18:0,duration:reduced?0:600});});$('gis-reset').addEventListener('click',()=>{detail(null);view('moscow');});
-  Promise.all(['data/facilities.json','data/territory.geojson'].map(url=>fetch(url+'?v=2.10').then(r=>{if(!r.ok)throw Error('Data unavailable');return r.json();}))).then(([data,geo])=>{validate(data,geo);catalog=data;geography=geo;center=geo.metadata.ring_bbox_center;table();detail(null);$('gis-data-status').textContent=`В подборке: ${catalog.items.length} площадок. Проверено: ${catalog.checkedAt}. «—» означает, что функция не отмечена в подборке, а не доказанное отсутствие.`;startMap();}).catch(()=>{$('gis-data-status').textContent='Подборка пока недоступна. Попробуйте обновить страницу позже.';$('gis-map-status').textContent='Не удалось загрузить проверенные геоданные.';});
+  Promise.all(['data/facilities.json','data/territory.geojson'].map(url=>fetch(url+'?v=2.11').then(r=>{if(!r.ok)throw Error('Data unavailable');return r.json();}))).then(([data,geo])=>{validate(data,geo);catalog=data;geography=geo;center=geo.metadata.ring_bbox_center;table();detail(null);$('gis-data-status').textContent=`В подборке: ${catalog.items.length} площадок. Проверено: ${catalog.checkedAt}. «—» означает, что функция не отмечена в подборке, а не доказанное отсутствие.`;startMap();}).catch(()=>{$('gis-data-status').textContent='Подборка пока недоступна. Попробуйте обновить страницу позже.';$('gis-map-status').textContent='Не удалось загрузить проверенные геоданные.';});
 })();
