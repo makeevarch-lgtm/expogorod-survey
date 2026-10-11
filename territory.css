@@ -12,3 +12,25 @@
 .gis-table-focus{display:block;font-size:10px;color:#666;margin-top:5px;text-transform:uppercase;letter-spacing:.04em}
 #gis-detail .gis-focus-note{border-left:2px solid #414cda;padding-left:9px;color:#333}
 .gis-hierarchy{padding:10px 13px;border-top:1px solid #ccc;margin:0;font-size:11px;color:#5c5c58;background:#fafaf8;line-height:1.5}
+
+/* On phones, each table row becomes a labelled card; the desktop table is unchanged. */
+.gis-function-status{display:none}
+@media(max-width:760px){
+  .gis-table-scroll{overflow:visible}
+  .gis-table{display:block;min-width:0;width:100%;font-size:13px}
+  .gis-table thead{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .gis-table tbody{display:grid;gap:14px}
+  .gis-table tbody tr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1.5px solid var(--ink);background:#fff}
+  .gis-table tbody tr.is-selected{background:#f0f2ff}
+  .gis-table td{display:block;min-width:0;border:0;padding:12px}
+  .gis-table .gis-table-name{grid-column:1/-1;border-bottom:1px solid #bbb;background:#f2f2f2}
+  .gis-table .gis-table-name button{font-size:15px;line-height:1.45;min-height:24px;overflow-wrap:anywhere}
+  .gis-table .gis-table-function{grid-column:span 2;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-bottom:1px solid #bbb}
+  .gis-table .gis-table-function+.gis-table-function{border-left:1px solid #ddd}
+  .gis-table td[data-label]::before{content:attr(data-label);display:block;font-size:11px;line-height:1.3;color:#555;margin-bottom:4px}
+  .gis-table .gis-function-status{display:block;font-size:10px;line-height:1.3;color:#555}
+  .gis-table .function-dot,.gis-table .gis-function-dash{height:16px;line-height:16px}
+  .gis-table .gis-table-distance,.gis-table .gis-table-source{grid-column:span 3;text-align:left}
+  .gis-table .gis-table-source{border-left:1px solid #ddd}
+  .gis-table .gis-table-source a{display:inline-flex;align-items:center;min-height:28px;font-size:13px}
+}

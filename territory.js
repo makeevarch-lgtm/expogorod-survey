@@ -23,8 +23,26 @@
   }
   function focusItem(item){detail(item);if(ready)map.flyTo({center:item.coordinates,zoom:14.5,pitch:tilted?55:0,bearing:tilted?-18:0,duration:reduced?0:1200});document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed','false'));}
   function table(){const items=visible();$('gis-count').textContent=items.length;$('gis-mixed').textContent=items.filter(i=>i.functions.length>1).length;
-    const table=el('table',undefined,'gis-table');table.append(el('caption','Выбранные площадки: функции и расстояние до кольца','sr-only'));const head=el('thead'),hr=el('tr');['Площадка','Наука','Выставки','Образование','До кольца, км','Источник'].forEach(t=>{const th=el('th',t);th.scope='col';hr.append(th);});head.append(hr);table.append(head);const body=el('tbody');
-    items.slice().sort((a,b)=>distance(center,a.coordinates)-distance(center,b.coordinates)).forEach(item=>{const row=el('tr');row.dataset.id=item.id;const name=el('td');const button=el('button',item.name);button.type='button';button.addEventListener('click',()=>{focusItem(item);$('gis-map').scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});});name.append(button);if(item.focusReason)name.append(el('small','Опорный пример','gis-table-focus'));row.append(name);Object.keys(labels).forEach(f=>{const cell=el('td');if(item.functions.includes(f)){const dot=el('span',undefined,'function-dot');dot.style.background=colors[f]+'bf';dot.setAttribute('aria-label','Подтверждено источником');cell.append(dot);}else{cell.textContent='—';cell.setAttribute('aria-label','Не отмечено в подборке');}row.append(cell);});row.append(el('td',fmt(distance(center,item.coordinates))));const source=el('td'),link=el('a','Сайт ↗');link.href=item.sourceUrl;link.target='_blank';link.rel='noopener noreferrer';source.append(link);row.append(source);body.append(row);});table.append(body);$('gis-table').replaceChildren(table);if(!items.length)$('gis-table').append(el('p','В подборке пока нет площадок с такой функцией.'));
+    const table=el('table',undefined,'gis-table');table.setAttribute('role','table');table.append(el('caption','Выбранные площадки: функции и расстояние до кольца','sr-only'));
+    const head=el('thead'),hr=el('tr');head.setAttribute('role','rowgroup');hr.setAttribute('role','row');
+    ['Площадка','Наука','Выставки','Образование','До кольца, км','Источник'].forEach(t=>{const th=el('th',t);th.scope='col';th.setAttribute('role','columnheader');hr.append(th);});head.append(hr);table.append(head);
+    const body=el('tbody');body.setAttribute('role','rowgroup');
+    items.slice().sort((a,b)=>distance(center,a.coordinates)-distance(center,b.coordinates)).forEach(item=>{
+      const row=el('tr');row.dataset.id=item.id;row.setAttribute('role','row');
+      const name=el('td',undefined,'gis-table-name'),button=el('button',item.name);name.setAttribute('role','cell');button.type='button';
+      button.addEventListener('click',()=>{focusItem(item);$('gis-map').scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});});
+      name.append(button);if(item.focusReason)name.append(el('small','Опорный пример','gis-table-focus'));row.append(name);
+      Object.keys(labels).forEach(f=>{
+        const cell=el('td',undefined,'gis-table-function');cell.dataset.label=labels[f];cell.setAttribute('role','cell');
+        if(item.functions.includes(f)){
+          const dot=el('span',undefined,'function-dot');dot.style.background=colors[f]+'bf';dot.setAttribute('aria-label','Подтверждено источником');cell.append(dot,el('span','Есть','gis-function-status'));
+        }else{const dash=el('span','—','gis-function-dash');dash.setAttribute('aria-label','Не отмечено в подборке');cell.append(dash,el('span','Не отмечено','gis-function-status'));}
+        row.append(cell);
+      });
+      const distanceCell=el('td',fmt(distance(center,item.coordinates)),'gis-table-distance');distanceCell.dataset.label='До кольца, км';distanceCell.setAttribute('role','cell');row.append(distanceCell);
+      const source=el('td',undefined,'gis-table-source'),link=el('a','Сайт ↗');source.dataset.label='Источник';source.setAttribute('role','cell');link.href=item.sourceUrl;link.target='_blank';link.rel='noopener noreferrer';source.append(link);row.append(source);body.append(row);
+    });
+    table.append(body);$('gis-table').replaceChildren(table);if(!items.length)$('gis-table').append(el('p','В подборке пока нет площадок с такой функцией.'));
     markers.forEach(m=>m.marker.getElement().hidden=m.id!=='ring'&&!items.some(i=>i.id===m.id));if(selected&&!items.some(i=>i.id===selected))detail(null);updateLabels();
   }
   function view(which){if(!ready)return;const duration=reduced?0:1200;if(which==='ring'){tilted=true;$('gis-3d').setAttribute('aria-pressed','true');const b=geography.metadata.ring_bbox;map.fitBounds([[b[0],b[1]],[b[2],b[3]]],{padding:55,pitch:tilted?55:0,bearing:tilted?-20:0,duration,maxZoom:15.2});detail(null);}else{const points=[center,...visible().map(i=>i.coordinates)],bounds=points.reduce((b,p)=>b.extend(p),new maplibregl.LngLatBounds());map.fitBounds(bounds,{padding:{top:80,bottom:70,left:60,right:60},pitch:tilted?48:0,bearing:tilted?-14:0,duration,maxZoom:11});}document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===which)));}
