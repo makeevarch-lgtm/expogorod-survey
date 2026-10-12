@@ -46,7 +46,7 @@
       const bounds=new maplibregl.LngLatBounds([b[0],b[1]],[b[2],b[3]]);
 
       if(tourStep===2){
-        map.flyTo({center:[(b[0]+b[2])/2,(b[1]+b[3])/2],zoom:$('gis-map').clientWidth>700?14.65:14.05,pitch:44,bearing:0,duration});
+        map.flyTo({center:[37.5506,55.5124],zoom:$('gis-map').clientWidth>700?14.3:13.75,pitch:35,bearing:0,duration});
       }else map.fitBounds(bounds,{padding,pitch:50,bearing:-20,duration,maxZoom:15.2});
     }
     map.setPaintProperty('expo-rail-approach','line-width',['interpolate',['linear'],['zoom'],8,tourStep===2?2:1,15,tourStep===2?4:2.8]);
@@ -101,6 +101,9 @@
   // Label collisions affect captions only; geographic marker positions never move.
   function updateLabels(){
     if(!map)return;
+    if(tourStep===2){layoutContextCallouts();return;}
+    $('gis-callout-lines')?.replaceChildren();
+    [...contextMarkers,...markers].forEach(m=>{m.button.classList.remove('is-callout');const label=m.button.querySelector('.gis-pin-label, .gis-context-label');label.style.removeProperty('left');label.style.removeProperty('top');});
     const bounds=$('gis-map').getBoundingClientRect(),occupied=[];
     markers.forEach(m=>m.button.classList.remove('has-label'));
     contextMarkers.forEach(m=>m.button.classList.remove('has-label','label-below'));
@@ -117,6 +120,30 @@
       if(m.context&&overlaps(r)){m.button.classList.add('label-below');r=label.getBoundingClientRect();}
       if(overlaps(r))m.button.classList.remove('has-label');
       else occupied.push(r);
+    }
+  }
+  function layoutContextCallouts(){
+    const frame=$('gis-map').getBoundingClientRect();
+    if(!frame.width||!frame.height)return;
+    let leaders=$('gis-callout-lines');
+    if(!leaders){leaders=document.createElementNS('http://www.w3.org/2000/svg','svg');leaders.id='gis-callout-lines';leaders.setAttribute('aria-hidden','true');$('gis-map').append(leaders);}
+    leaders.setAttribute('viewBox',`0 0 ${frame.width} ${frame.height}`);leaders.replaceChildren();
+    markers.forEach(m=>m.button.classList.remove('has-label'));
+    const all=[...contextMarkers,...markers.filter(m=>m.id==='station')];
+    const items=all.map(m=>{
+      m.button.classList.add('has-label','is-callout');m.button.classList.remove('label-below');
+      const label=m.button.querySelector('.gis-context-label,.gis-pin-label');label.style.marginLeft='0px';
+      const pin=m.button.getBoundingClientRect(),r=label.getBoundingClientRect();
+      return {id:m.id,x:(pin.left+pin.right)/2-frame.left,y:(pin.top+pin.bottom)/2-frame.top,width:r.width,height:r.height,priority:m.id==='station'?10:m.priority||4};
+    });
+    const layout=window.EXPO_CALLOUTS.arrangeCallouts(items,frame.width,frame.height);
+    for(const r of layout){
+      const m=all.find(m=>m.id===r.id),label=m.button.querySelector('.gis-context-label,.gis-pin-label');
+      label.style.left=(r.left-r.x+m.button.clientWidth/2)+'px';label.style.top=(r.top-r.y+m.button.clientHeight/2)+'px';
+      const tx=Math.max(r.left,Math.min(r.left+r.width,r.x)),ty=Math.max(r.top,Math.min(r.top+r.height,r.y));
+      const line=document.createElementNS('http://www.w3.org/2000/svg','path');
+      line.setAttribute('d',`M ${r.x} ${r.y} L ${r.x} ${ty} L ${tx} ${ty}`);
+      line.setAttribute('stroke',m.id==='station'?'#414cda':getComputedStyle(m.button).getPropertyValue('--context-color')||'#777ed0');leaders.append(line);
     }
   }
   function marker(point,id,name,functions,focusReason,shortName){
