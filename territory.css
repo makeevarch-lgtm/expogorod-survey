@@ -65,3 +65,49 @@
   #gis-tour-description{margin:10px 0}.gis-tour-insight{margin:10px 0 15px}.gis-tour-controls{max-width:420px}.gis-legend{gap:10px 16px}
 }
 @media(prefers-reduced-motion:reduce){.gis-pin,.gis-tour-steps button{transition:none}}
+
+/* Existing campus and railway: small grounded labels, with the station as the anchor. */
+.gis-context-marker{--context-color:#777ed0;position:relative;display:flex;align-items:center;gap:6px;pointer-events:none;max-width:150px}
+.gis-context-marker::before{content:'';width:6px;height:6px;flex:none;border:1px solid #fff;border-radius:50%;background:var(--context-color);box-shadow:0 0 0 1px var(--context-color)}
+.gis-context-label{display:block;max-width:136px;padding:5px 7px;border:1px solid #b4b4b4;border-left:3px solid var(--context-color);background:#fffffff5;color:#252525;font-size:11px;font-weight:600;line-height:1.25;box-shadow:0 2px 5px #0000000c;overflow-wrap:normal}
+.gis-context-marker.campus{--context-color:#d967a0}.gis-context-marker.exhibition{--context-color:#e385b1}
+.gis-context-marker.mainline{--context-color:#4c55ce}.gis-context-marker.park{--context-color:#a6b964}
+.gis-context-marker.settlement{--context-color:#969696}
+.gis-context-marker.exhibition .gis-context-label,.gis-context-marker.settlement .gis-context-label,.gis-context-marker.park .gis-context-label{font-size:10px;font-weight:500;padding:4px 6px}
+.gis-context-marker[hidden]{display:none!important}
+.gis-pin-station{width:32px;height:32px;border-width:2.5px!important;box-shadow:0 0 0 5px #fff,0 0 0 7px #bcc6fb77;z-index:6}
+.gis-pin-station::after{content:'D2';position:absolute;inset:auto -12px -9px auto;padding:2px 4px;background:#ce2a83;border:1px solid #fff;border-radius:2px;color:#fff;font-size:10px;font-weight:700;line-height:1.1;box-shadow:0 1px 3px #0000001a;pointer-events:none}
+.gis-pin-station .gis-pin-label{border-color:#777ed0;padding:5px 8px;max-width:150px}
+.gis-context-legend{display:flex;flex-wrap:wrap;gap:10px 22px;padding:12px 14px;border-top:1px solid #ccc;background:#fff;font-size:11px}
+.gis-context-legend[hidden]{display:none}
+.gis-context-legend>span{display:flex;align-items:center;gap:7px;line-height:1.35}
+.gis-context-legend>p{flex-basis:100%;margin:0;font-size:10px;line-height:1.5;color:#666}
+.gis-context-line{width:23px;height:0;border-top:3px solid #4c55ce;display:inline-block}
+.gis-context-line.connection{border-top:2px dashed #8b83c3}
+.gis-context-zone{width:16px;height:11px;border:1px solid #d967a0;background:#efabc850;display:inline-block}
+.gis-context-station{display:inline-block;background:#ce2a83;color:#fff;font-style:normal;font-size:9px;font-weight:700;padding:2px 4px;line-height:1.1}
+@media(max-width:760px){
+  .gis-context-marker{max-width:124px;gap:4px}.gis-context-label{max-width:114px;font-size:10px;padding:4px 5px}
+  .gis-context-marker.exhibition .gis-context-label,.gis-context-marker.settlement .gis-context-label,.gis-context-marker.park .gis-context-label{font-size:9px;padding:3px 5px}
+  .gis-context-legend{gap:10px 16px}.gis-pin-station{width:30px;height:30px}
+}
+
+.gis-legend[hidden]{display:none}
+.gis-context-marker{pointer-events:auto;cursor:pointer;border:0!important;padding:0!important;background:transparent!important;font:inherit}
+.gis-context-marker:not(.has-label) .gis-context-label{display:none}
+.gis-context-marker:hover .gis-context-label,.gis-context-marker:focus-visible .gis-context-label{display:block}
+.gis-context-marker:focus-visible{outline:2px solid #414cda;outline-offset:4px}
+
+/* The dot stays at the source coordinate; only its caption may shift to avoid overlap. */
+.gis-context-marker{display:block;width:7px;height:7px;max-width:none;overflow:visible}
+.gis-context-marker::before{display:block;box-sizing:border-box;width:7px;height:7px}
+.gis-context-marker .gis-context-label{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);width:max-content;max-width:136px}
+.gis-context-marker::after{content:'';position:absolute;left:3px;bottom:7px;width:1px;height:8px;background:var(--context-color)}
+.gis-context-marker:not(.has-label)::after{display:none}
+.gis-context-marker.building{--context-color:#bb608a}
+.gis-context-marker.university{--context-color:#a6b964}
+.gis-context-marker.approach{--context-color:#777ed0}
+.gis-context-marker.building .gis-context-label{font-weight:500;font-size:10px}
+
+.gis-context-marker.label-below .gis-context-label{top:15px;bottom:auto}
+.gis-context-marker.label-below::after{top:7px;bottom:auto}

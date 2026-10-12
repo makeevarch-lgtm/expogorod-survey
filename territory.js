@@ -5,12 +5,12 @@
   const colors = {science:'#bcc6fb',exhibition:'#fe96c1',education:'#c6d875'};
   const el = (tag,text,className) => {const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;};
   const fmt = n => new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1}).format(n);
-  let map, catalog, geography, buildings, center, markers=[], filter='all', selected=null, ready=false, tilted=false, tourStep=0;
+  let map, catalog, geography, buildings, railContext, center, markers=[], contextMarkers=[], filter='all', selected=null, ready=false, tilted=false, tourStep=0;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const tour = [
     {title:'Городской контекст', camera:'Обзор Москвы', description:'Научные, выставочные и образовательные функции уже существуют в городе. Выберите метку, чтобы посмотреть, как они сочетаются на одной площадке.', next:'К кольцу →'},
-    {title:'Экспериментальное кольцо', camera:'Кольцо и окружение', description:'Три замкнутых железнодорожных пути в Щербинке окружают большую территорию. Здесь исследуется идея Экспогорода — сочетания науки, выставок и городской жизни.', insight:'Синяя заливка показывает пространство внутри внешнего пути, а не границу проектирования. Серые объёмы — существующая застройка, высоты могут быть оценочными.', next:'Барьеры и связи →'},
-    {title:'Что связывает территорию с городом', camera:'Кольцо, подход и станция', description:'Кольцевые пути физически обособляют внутреннюю территорию. Сиреневая линия показывает соединение с магистралью; рядом отмечена существующая станция Щербинка.', insight:'Железнодорожное соединение не означает пассажирский маршрут. Доступные входы и сквозные пешеходные переходы нужно проверять отдельно на месте.', next:'Снова Москва ↺'}
+    {title:'Экспериментальное кольцо', camera:'Кольцо и окружение', description:'Три замкнутых железнодорожных пути в Щербинке окружают большую территорию. Здесь исследуется идея Экспогорода — сочетания науки, выставок и городской жизни.', insight:'Синяя заливка показывает пространство внутри внешнего пути, а не границу проектирования. Серые объёмы — существующая застройка, высоты могут быть оценочными.', next:'ВНИИЖТ и МЦД-2 →'},
+    {title:'ВНИИЖТ и МЦД-2', camera:'Корпуса ВНИИЖТ · Щербинка · МЦД-2', description:'Здесь видны существующий комплекс ВНИИЖТ, его испытательные и лабораторные корпуса, станция Щербинка и основной железнодорожный ход. Нажмите на подпись, чтобы узнать, что это за объект.', insight:'Синий — Курское направление, по которому проходит МЦД-2. Пунктир — соединительный путь к испытательному кольцу. Выделение комплекса показывает существующее положение; доступность проходов по карте не определяется.', next:'Снова Москва ↺'}
   ];
   function tourCopy(){
     const step=tour[tourStep];
@@ -21,12 +21,14 @@
     $('gis-tour-next').textContent=step.next;
     $('gis-tour-back').disabled=tourStep===0;
     $('gis-camera-label').textContent=step.camera;
+    $('gis-context-legend').hidden=tourStep!==2;
+    document.querySelector('.gis-legend:not(#gis-context-legend)').hidden=tourStep===2;
     document.querySelectorAll('[data-tour]').forEach(b=>{if(Number(b.dataset.tour)===tourStep)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
   }
   function stationDetail(){
     detail(null);selected='station';
-    const target=$('gis-detail');target.hidden=false;target.replaceChildren(el('h3','Станция Щербинка'),el('p','Существующая железнодорожная станция · точка из OpenStreetMap.'),el('p','Станция — ориентир транспортного окружения кольца. Эта карта не показывает подтверждённый пешеходный маршрут от станции внутрь территории.'));
-    const a=el('a','Станция в OpenStreetMap ↗');a.href='https://www.openstreetmap.org/node/1990632047';a.target='_blank';a.rel='noopener noreferrer';target.append(a);
+    const target=$('gis-detail');target.hidden=false;target.replaceChildren(el('h3','Станция Щербинка'),el('p','Существующая станция МЦД-2 · Курское направление. Положение — OpenStreetMap, статус D2 — Департамент транспорта Москвы.'),el('p','Станция — ориентир транспортного окружения кольца. Эта карта не показывает подтверждённый пешеходный маршрут от станции внутрь территории.'));
+    const a=el('a','Станция в OpenStreetMap ↗');a.href='https://www.openstreetmap.org/node/1990632047';a.target='_blank';a.rel='noopener noreferrer';target.append(a);const official=el('a','Щербинка D2 · Дептранс ↗');official.href='https://transport.mos.ru/mostrans/all_news/123003';official.target='_blank';official.rel='noopener noreferrer';target.append(el('p'),official);
     markers.forEach(m=>m.button.classList.toggle('is-selected',m.id==='station'));updateLabels();
   }
   function setTour(index){
@@ -40,16 +42,20 @@
       const bounds=[center,...catalog.items.map(i=>i.coordinates)].reduce((b,p)=>b.extend(p),new maplibregl.LngLatBounds());
       map.fitBounds(bounds,{padding,pitch:0,bearing:0,duration,maxZoom:11});
     }else{
-      const b=geography.metadata.ring_bbox;
+      const b=tourStep===2?railContext.metadata.focus_bbox:geography.metadata.ring_bbox;
       const bounds=new maplibregl.LngLatBounds([b[0],b[1]],[b[2],b[3]]);
+
       if(tourStep===2){
-        geography.features.filter(f=>f.properties.kind==='rail-approach').forEach(f=>f.geometry.coordinates.forEach(p=>bounds.extend(p)));
-        const station=geography.features.find(f=>f.properties.kind==='station');if(station)bounds.extend(station.geometry.coordinates);
-      }
-      map.fitBounds(bounds,{padding,pitch:tourStep===1?50:38,bearing:tourStep===1?-20:0,duration,maxZoom:15.2});
+        map.flyTo({center:[(b[0]+b[2])/2,(b[1]+b[3])/2],zoom:$('gis-map').clientWidth>700?14.65:14.05,pitch:44,bearing:0,duration});
+      }else map.fitBounds(bounds,{padding,pitch:50,bearing:-20,duration,maxZoom:15.2});
     }
     map.setPaintProperty('expo-rail-approach','line-width',['interpolate',['linear'],['zoom'],8,tourStep===2?2:1,15,tourStep===2?4:2.8]);
     map.setPaintProperty('expo-rail-approach','line-opacity',tourStep===2?1:.7);
+    map.setPaintProperty('expo-rail-approach','line-dasharray',tourStep===2?[2,1.5]:[1,0]);
+    ['context-campus-fill','context-campus-edge'].forEach(id=>map.setLayoutProperty(id,'visibility',tourStep===2?'visible':'none'));
+    ['context-main-halo','context-main-line'].forEach(id=>map.setLayoutProperty(id,'visibility',tourStep===0?'none':'visible'));
+    map.setPaintProperty('expo-ring-area','fill-opacity',tourStep===2?.07:.18);
+    contextMarkers.forEach(m=>m.button.hidden=tourStep!==2);
     updateLabels();
   }
   const distance = (a,b) => {const r=Math.PI/180;const dlat=(b[1]-a[1])*r,dlon=(b[0]-a[0])*r;const h=Math.sin(dlat/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dlon/2)**2;return 6371*2*Math.asin(Math.sqrt(Math.min(1,h)));};
@@ -97,16 +103,19 @@
     if(!map)return;
     const bounds=$('gis-map').getBoundingClientRect(),occupied=[];
     markers.forEach(m=>m.button.classList.remove('has-label'));
-    const ordered=markers.filter(m=>!m.button.hidden&&(m.id==='ring'||m.id==='station'||m.id===selected||m.focus))
-      .sort((a,b)=>(b.id===selected?3:b.id==='ring'?2:1)-(a.id===selected?3:a.id==='ring'?2:1));
+    contextMarkers.forEach(m=>m.button.classList.remove('has-label','label-below'));
+    const ordered=[...markers,...contextMarkers].filter(m=>!m.button.hidden&&(m.id==='ring'||m.id==='station'||m.id===selected||m.focus||m.context))
+      .sort((a,b)=>(b.id===selected?10:b.id==='station'?9:b.context?b.priority: b.id==='ring'?2:1)-(a.id===selected?10:a.id==='station'?9:a.context?a.priority: a.id==='ring'?2:1));
     for(const m of ordered){
       const pin=m.button.getBoundingClientRect();
       if(pin.right<bounds.left||pin.left>bounds.right||pin.bottom<bounds.top||pin.top>bounds.bottom)continue;
       m.button.classList.add('has-label');
-      const label=m.button.querySelector('.gis-pin-label');label.style.marginLeft='0px';
+      const label=m.button.querySelector('.gis-pin-label, .gis-context-label');label.style.marginLeft='0px';
       let r=label.getBoundingClientRect();const shift=Math.max(0,bounds.left+8-r.left)-Math.max(0,r.right-bounds.right+8);
       label.style.marginLeft=shift+'px';r=label.getBoundingClientRect();
-      if(occupied.some(o=>r.left<o.right+8&&r.right>o.left-8&&r.top<o.bottom+8&&r.bottom>o.top-8))m.button.classList.remove('has-label');
+      const overlaps=box=>occupied.some(o=>box.left<o.right+8&&box.right>o.left-8&&box.top<o.bottom+8&&box.bottom>o.top-8);
+      if(m.context&&overlaps(r)){m.button.classList.add('label-below');r=label.getBoundingClientRect();}
+      if(overlaps(r))m.button.classList.remove('has-label');
       else occupied.push(r);
     }
   }
@@ -118,6 +127,20 @@
     button.addEventListener('click',()=>id==='ring'?view('ring'):id==='station'?stationDetail():focusItem(catalog.items.find(i=>i.id===id)));
     if(id==='station')button.hidden=tourStep!==2;
     const m=new maplibregl.Marker({element:button}).setLngLat(point).addTo(map);markers.push({id,marker:m,button,focus:Boolean(focusReason)});
+  }
+  function contextMarker(feature){
+    const p=feature.properties;
+    const button=el('button',undefined,'gis-context-marker '+(p.type||'campus'));
+    button.type='button';button.hidden=true;button.setAttribute('aria-label',p.label);button.title=p.label;
+    button.append(el('span',p.label,'gis-context-label'));
+    button.addEventListener('click',()=>{
+      detail(null);selected=String(feature.id);const target=$('gis-detail');target.hidden=false;
+      target.replaceChildren(el('h3',p.label),el('p',p.description));
+      if(p.source_url){const a=el('a','Источник объекта ↗');a.href=p.source_url;a.target='_blank';a.rel='noopener noreferrer';target.append(a);}
+      updateLabels();
+    });
+    const marker=new maplibregl.Marker({element:button,anchor:'center'}).setLngLat(feature.geometry.coordinates).addTo(map);
+    contextMarkers.push({id:String(feature.id),marker,button,context:true,priority:p.priority||4});
   }
   function minimalBasemap(){
     for(const layer of map.getStyle().layers){
@@ -163,7 +186,14 @@
         map.addLayer({id:'expo-buildings',type:'fill-extrusion',source:'openmaptiles','source-layer':'building',minzoom:14,filter:['!=',['get','hide_3d'],true],paint:{'fill-extrusion-color':'#c4c4c4','fill-extrusion-height':['coalesce',['get','render_height'],0],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.85}},symbol?.id);
         map.addSource('ring-buildings',{type:'geojson',data:buildings});
         map.addLayer({id:'ring-buildings-overview',type:'fill-extrusion',source:'ring-buildings',minzoom:12,maxzoom:14,paint:{'fill-extrusion-color':'#c4c4c4','fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','base'],'fill-extrusion-opacity':.85}},symbol?.id);
-        map.addLayer({id:'expo-rail-approach',type:'line',source:'expo-ring',filter:['in',['get','kind'],['literal',['rail-approach','rail-main']]],layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#777ed0','line-width':['interpolate',['linear'],['zoom'],8,1,15,2.8],'line-opacity':.8}});
+        map.addLayer({id:'expo-rail-approach',type:'line',source:'expo-ring',filter:['==',['get','kind'],'rail-approach'],layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#777ed0','line-width':['interpolate',['linear'],['zoom'],8,1,15,2.8],'line-opacity':.8}});
+        map.addSource('rail-context',{type:'geojson',data:railContext});
+        const ground=layers.find(l=>l['source-layer']==='building')?.id||symbol?.id;
+        map.addLayer({id:'context-campus-fill',type:'fill',source:'rail-context',filter:['==',['get','kind'],'campus-area'],layout:{visibility:'none'},paint:{'fill-color':'#fe96c1','fill-opacity':.16}},ground);
+        map.addLayer({id:'context-campus-edge',type:'line',source:'rail-context',filter:['==',['get','kind'],'campus-area'],layout:{visibility:'none','line-join':'round'},paint:{'line-color':'#bb608a','line-width':2,'line-opacity':.8}});
+        map.addLayer({id:'context-main-halo',type:'line',source:'rail-context',filter:['==',['get','kind'],'mcd-main'],layout:{visibility:'none','line-cap':'round','line-join':'round'},paint:{'line-color':'#bcc6fb','line-width':12,'line-opacity':.55,'line-blur':3}});
+        map.addLayer({id:'context-main-line',type:'line',source:'rail-context',filter:['==',['get','kind'],'mcd-main'],layout:{visibility:'none','line-cap':'round','line-join':'round'},paint:{'line-color':'#414cda','line-width':['interpolate',['linear'],['zoom'],10,2,15,4.5],'line-opacity':.95}});
+        railContext.features.filter(f=>f.properties.kind==='context-label').forEach(contextMarker);
         map.addLayer({id:'expo-ring-halo',type:'line',source:'expo-ring',filter:['==',['get','kind'],'ring'],paint:{'line-color':'#bcc6fb','line-width':['interpolate',['linear'],['zoom'],8,6,15,16],'line-opacity':.5,'line-blur':5}});map.addLayer({id:'expo-ring-line',type:'line',source:'expo-ring',filter:['==',['get','kind'],'ring'],paint:{'line-color':'#414cda','line-width':['interpolate',['linear'],['zoom'],8,2,15,3],'line-opacity':.9}});
         marker(center,'ring','Экспериментальное кольцо',null,null,'Кольцо ВНИИЖТ');const station=geography.features.find(f=>f.properties.kind==='station');if(station)marker(station.geometry.coordinates,'station','Существующая станция Щербинка',null,null,'Станция Щербинка');catalog.items.forEach(i=>marker(i.coordinates,i.id,i.name,i.functions,i.focusReason,i.shortName));map.on('moveend',updateLabels);map.on('resize',updateLabels);ready=true;$('gis-map-status').hidden=true;table();setTour(tourStep);
       }catch(e){$('gis-map-status').hidden=false;$('gis-map-status').textContent='Не удалось отобразить все слои карты. Подборка площадок доступна в таблице.';}
@@ -175,5 +205,5 @@
   $('gis-tour-next').addEventListener('click',()=>setTour((tourStep+1)%3));
   $('gis-tour-back').addEventListener('click',()=>setTour(tourStep-1));
   $('gis-3d').addEventListener('click',()=>{tilted=!tilted;$('gis-3d').setAttribute('aria-pressed',String(tilted));if(ready)map.easeTo({pitch:tilted?55:0,bearing:tilted?-18:0,duration:reduced?0:600});});$('gis-reset').addEventListener('click',()=>{detail(null);view('moscow');});
-  Promise.all(['data/facilities.json','data/territory.geojson','data/ring-buildings.geojson'].map(url=>fetch(url+'?v=2.15').then(r=>{if(!r.ok)throw Error('Data unavailable');return r.json();}))).then(([data,geo,context])=>{validate(data,geo);catalog=data;geography=geo;buildings=context;center=geo.metadata.ring_bbox_center;table();detail(null);tourCopy();$('gis-data-status').textContent=`В подборке: ${catalog.items.length} площадок. Проверено: ${catalog.checkedAt}. «—» означает, что функция не отмечена в подборке, а не доказанное отсутствие.`;startMap();}).catch(()=>{$('gis-data-status').textContent='Подборка пока недоступна. Попробуйте обновить страницу позже.';$('gis-map-status').textContent='Не удалось загрузить проверенные геоданные.';});
+  Promise.all(['data/facilities.json','data/territory.geojson','data/ring-buildings.geojson','data/rail-context.geojson'].map(url=>fetch(url+'?v=3.1').then(r=>{if(!r.ok)throw Error('Data unavailable');return r.json();}))).then(([data,geo,context,rail])=>{validate(data,geo);if(!rail?.metadata?.focus_bbox||!rail.features?.length)throw Error('Invalid rail context');railContext=rail;catalog=data;geography=geo;buildings=context;center=geo.metadata.ring_bbox_center;table();detail(null);tourCopy();$('gis-data-status').textContent=`В подборке: ${catalog.items.length} площадок. Проверено: ${catalog.checkedAt}. «—» означает, что функция не отмечена в подборке, а не доказанное отсутствие.`;startMap();}).catch(()=>{$('gis-data-status').textContent='Подборка пока недоступна. Попробуйте обновить страницу позже.';$('gis-map-status').textContent='Не удалось загрузить проверенные геоданные.';});
 })();
