@@ -1,148 +1,178 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T12:17:18+00:00",
-  "sourceAsOf": "2026-10-11T15:16:47+03:00",
-  "totalResponses": 19,
+  "generatedAt": "2026-10-12T06:11:06+00:00",
+  "sourceAsOf": "2026-10-12T09:10:37+03:00",
+  "totalResponses": 21,
   "interested": {
-    "count": 16,
-    "base": 18,
-    "percent": 88.9
+    "count": 17,
+    "base": 19,
+    "percent": 89.5
   },
   "network": {
-    "base": 16,
+    "base": 18,
     "nodes": [
       {
         "id": "technique",
         "label": "Демонстрация техники в действии",
-        "count": 3
+        "count": 4
       },
       {
         "id": "science",
         "label": "Интерактивная научная выставка",
-        "count": 8
+        "count": 9
       },
       {
         "id": "events",
         "label": "Крупная выставка или фестиваль",
-        "count": 13
+        "count": 14
       },
       {
         "id": "workshops",
         "label": "Лекции и мастер-классы",
-        "count": 10
+        "count": 11
       },
       {
         "id": "sport",
         "label": "Спортивные занятия или соревнования",
-        "count": 1
+        "count": 2
       },
       {
         "id": "park",
         "label": "Прогулка в лесопарке",
-        "count": 9
+        "count": 10
       },
       {
         "id": "study",
         "label": "Учёба, исследование или профессиональная встреча",
-        "count": 6
+        "count": 7
       }
     ],
     "edges": [
       {
         "source": "events",
         "target": "park",
-        "count": 6,
-        "jaccard": 0.375
+        "count": 7,
+        "jaccard": 0.4118
       },
       {
         "source": "events",
         "target": "science",
-        "count": 6,
-        "jaccard": 0.4
+        "count": 7,
+        "jaccard": 0.4375
       },
       {
         "source": "events",
         "target": "sport",
-        "count": 1,
-        "jaccard": 0.0769
-      },
-      {
-        "source": "events",
-        "target": "study",
-        "count": 4,
-        "jaccard": 0.2667
-      },
-      {
-        "source": "events",
-        "target": "technique",
         "count": 2,
         "jaccard": 0.1429
       },
       {
         "source": "events",
+        "target": "study",
+        "count": 5,
+        "jaccard": 0.3125
+      },
+      {
+        "source": "events",
+        "target": "technique",
+        "count": 3,
+        "jaccard": 0.2
+      },
+      {
+        "source": "events",
         "target": "workshops",
-        "count": 9,
-        "jaccard": 0.6429
+        "count": 10,
+        "jaccard": 0.6667
       },
       {
         "source": "park",
         "target": "science",
-        "count": 4,
-        "jaccard": 0.3077
-      },
-      {
-        "source": "park",
-        "target": "study",
         "count": 5,
-        "jaccard": 0.5
+        "jaccard": 0.3571
+      },
+      {
+        "source": "park",
+        "target": "sport",
+        "count": 1,
+        "jaccard": 0.0909
+      },
+      {
+        "source": "park",
+        "target": "study",
+        "count": 6,
+        "jaccard": 0.5455
       },
       {
         "source": "park",
         "target": "technique",
-        "count": 2,
-        "jaccard": 0.2
+        "count": 3,
+        "jaccard": 0.2727
       },
       {
         "source": "park",
         "target": "workshops",
-        "count": 4,
-        "jaccard": 0.2667
+        "count": 5,
+        "jaccard": 0.3125
+      },
+      {
+        "source": "science",
+        "target": "sport",
+        "count": 1,
+        "jaccard": 0.1
       },
       {
         "source": "science",
         "target": "study",
-        "count": 2,
-        "jaccard": 0.1667
+        "count": 3,
+        "jaccard": 0.2308
       },
       {
         "source": "science",
         "target": "technique",
-        "count": 2,
-        "jaccard": 0.2222
+        "count": 3,
+        "jaccard": 0.3
       },
       {
         "source": "science",
         "target": "workshops",
-        "count": 6,
-        "jaccard": 0.5
+        "count": 7,
+        "jaccard": 0.5385
+      },
+      {
+        "source": "sport",
+        "target": "study",
+        "count": 1,
+        "jaccard": 0.125
+      },
+      {
+        "source": "sport",
+        "target": "technique",
+        "count": 1,
+        "jaccard": 0.2
       },
       {
         "source": "sport",
         "target": "workshops",
+        "count": 2,
+        "jaccard": 0.1818
+      },
+      {
+        "source": "study",
+        "target": "technique",
         "count": 1,
         "jaccard": 0.1
       },
       {
         "source": "study",
         "target": "workshops",
-        "count": 4,
-        "jaccard": 0.3333
+        "count": 5,
+        "jaccard": 0.3846
       },
       {
         "source": "technique",
         "target": "workshops",
-        "count": 1,
-        "jaccard": 0.0833
+        "count": 2,
+        "jaccard": 0.1538
       }
     ]
   },
@@ -154,7 +184,7 @@
     "beforeSelectionChange": 2,
     "networkMissing": 1,
     "networkInvalid": 2,
-    "interestedMissing": 1,
+    "interestedMissing": 2,
     "interestedInvalid": 0
   },
   "method": {
