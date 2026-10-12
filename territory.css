@@ -34,3 +34,34 @@
   .gis-table .gis-table-source{border-left:1px solid #ddd}
   .gis-table .gis-table-source a{display:inline-flex;align-items:center;min-height:28px;font-size:13px}
 }
+
+/* A short, user-controlled reading of the existing territory. */
+.territory-intro{font-size:13px;line-height:1.65;color:var(--muted);max-width:750px;margin:18px 0 28px}
+.gis-tour-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1.5px solid var(--ink);background:#fff}
+.gis-tour-steps button{display:grid;grid-template-columns:26px minmax(0,1fr);gap:5px 10px;align-items:start;text-align:left;padding:17px 20px;border:0;background:#fff;min-width:0;position:relative;transition:background .2s ease}
+.gis-tour-steps button+button{border-left:1px solid #ccc}
+.gis-tour-steps button>span{grid-row:span 2;font-size:12px;line-height:22px;color:#777}
+.gis-tour-steps strong{font-size:14px;line-height:1.5}.gis-tour-steps small{font-size:11px;color:var(--muted);line-height:1.4}
+.gis-tour-steps button[aria-current="step"]{background:#f0f2ff;box-shadow:inset 0 -3px var(--accent)}
+.gis-tour-steps button[aria-current="step"]>span{color:var(--accent);font-weight:700}
+.gis-toolbar{background:#f3f3f3;padding:10px 14px;gap:10px}.gis-toolbar>p{font-size:11px;margin:0;color:#555;overflow-wrap:anywhere}
+.gis-tour-copy{border-bottom:1px solid #c8c8c8;padding-bottom:22px;margin-bottom:20px}
+.gis-tour-counter{color:var(--accent);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 9px}
+.gis-tour-copy h2{text-transform:none;font-size:22px;line-height:1.2;letter-spacing:-.4px}
+#gis-tour-description{font-size:13px;line-height:1.65;color:#404040;margin:14px 0}
+.gis-tour-insight{font-size:11px;line-height:1.6;color:var(--muted);margin:12px 0 18px}
+.gis-tour-controls{display:flex;gap:8px}.gis-tour-controls button{min-height:42px}.gis-tour-controls #gis-tour-next{flex:1;background:var(--ink);color:white;font-weight:600;font-size:12px}
+.gis-tour-controls button:disabled{opacity:.3;cursor:default;box-shadow:none}
+.gis-filter-panel summary{font-weight:600;font-size:13px;cursor:pointer;min-height:32px}
+.gis-filter-panel .gis-totals{margin-bottom:0}.gis-filter-panel{margin-bottom:24px}
+.gis-pin{transition:box-shadow .2s ease,outline-color .2s ease}.gis-pin.is-selected{box-shadow:0 0 0 7px #bcc6fb55,0 0 22px #bcc6fb88}
+.gis-pin-station{width:26px;height:26px;background:#fff!important;border:2px solid #171717!important;border-radius:0!important;box-shadow:0 0 0 4px #ffffffe0}
+.gis-pin-station:before{content:'';position:absolute;inset:6px;border:1.5px solid #171717;border-radius:2px}
+.gis-pin-station .gis-pin-label{font-weight:600}.gis-pin-station[hidden]{display:none!important}
+@media(max-width:1000px){.gis-tour-steps button{padding:14px 12px}.gis-tour-copy h2{font-size:20px}}
+@media(max-width:760px){
+  .gis-tour-steps button{display:flex;flex-direction:column;gap:3px;padding:12px 9px}.gis-tour-steps button>span{line-height:1.5}.gis-tour-steps strong{font-size:11px;line-height:1.3}.gis-tour-steps small{display:none}
+  .gis-map-wrap{min-height:430px}.gis-sidebar{padding:18px}.gis-tour-copy{padding-bottom:18px;margin-bottom:18px}.gis-tour-copy h2{font-size:23px}.gis-tour-counter{margin-bottom:7px}
+  #gis-tour-description{margin:10px 0}.gis-tour-insight{margin:10px 0 15px}.gis-tour-controls{max-width:420px}.gis-legend{gap:10px 16px}
+}
+@media(prefers-reduced-motion:reduce){.gis-pin,.gis-tour-steps button{transition:none}}

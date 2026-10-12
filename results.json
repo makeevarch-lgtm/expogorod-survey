@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-12T06:11:06+00:00",
+  "generatedAt": "2026-10-12T18:54:28+00:00",
   "sourceAsOf": "2026-10-12T09:10:37+03:00",
   "totalResponses": 21,
   "interested": {
@@ -197,5 +197,126 @@
     "interestedBase": "Все корректно ответившие на Q4, включая «Трудно сказать».",
     "edge": "Количество анкет, в которых оба варианта выбраны вместе.",
     "normalization": "Jaccard = совместные выборы / анкеты с хотя бы одним из двух вариантов."
+  },
+  "mobility": {
+    "travelTime": {
+      "title": "Дорога в одну сторону",
+      "base": 20,
+      "missing": 1,
+      "invalid": 0,
+      "options": [
+        {
+          "id": "under30",
+          "label": "До 30 минут",
+          "count": 2
+        },
+        {
+          "id": "minutes31to45",
+          "label": "31–45 минут",
+          "count": 4
+        },
+        {
+          "id": "minutes46to60",
+          "label": "46–60 минут",
+          "count": 10
+        },
+        {
+          "id": "minutes61to90",
+          "label": "61–90 минут",
+          "count": 3
+        },
+        {
+          "id": "over90",
+          "label": "Больше 90 минут",
+          "count": 1
+        },
+        {
+          "id": "noTrip",
+          "label": "Специально не поеду",
+          "count": 0
+        },
+        {
+          "id": "unsure",
+          "label": "Трудно сказать",
+          "count": 0
+        }
+      ]
+    },
+    "transport": {
+      "title": "Предпочитаемый транспорт",
+      "base": 20,
+      "missing": 1,
+      "invalid": 0,
+      "options": [
+        {
+          "id": "public",
+          "label": "Общественный транспорт",
+          "count": 15
+        },
+        {
+          "id": "car",
+          "label": "Личный автомобиль",
+          "count": 3
+        },
+        {
+          "id": "taxi",
+          "label": "Такси",
+          "count": 1
+        },
+        {
+          "id": "bicycleOther",
+          "label": "Велосипед или другой вариант",
+          "count": 0
+        },
+        {
+          "id": "unsure",
+          "label": "Трудно сказать",
+          "count": 1
+        }
+      ]
+    },
+    "walkTime": {
+      "title": "Пешком от станции",
+      "base": 20,
+      "missing": 1,
+      "invalid": 0,
+      "options": [
+        {
+          "id": "under5",
+          "label": "До 5 минут",
+          "count": 1
+        },
+        {
+          "id": "minutes6to10",
+          "label": "6–10 минут",
+          "count": 2
+        },
+        {
+          "id": "minutes11to15",
+          "label": "11–15 минут",
+          "count": 9
+        },
+        {
+          "id": "minutes16to20",
+          "label": "16–20 минут",
+          "count": 6
+        },
+        {
+          "id": "over20",
+          "label": "Более 20 минут",
+          "count": 0
+        },
+        {
+          "id": "noStation",
+          "label": "Станцией пользоваться не планирую",
+          "count": 2
+        },
+        {
+          "id": "unsure",
+          "label": "Трудно сказать",
+          "count": 0
+        }
+      ]
+    }
   }
 }

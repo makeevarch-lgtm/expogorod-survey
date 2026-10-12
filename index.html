@@ -3,32 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Учебное исследование городского досуга: какие места вы посещаете и что хотели бы видеть рядом.">
+  <meta name="description" content="Экспогород — дипломное исследование территории экспериментального кольца в Щербинке. Пройдите короткий опрос о городском досуге или изучите карту и результаты.">
   <meta name="theme-color" content="#414cda">
   <title>Экспогород — городской интерес</title>
-  <link rel="icon" href="assets/mark.svg?v=2.13" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=2.13">
-  <script src="config.js?v=2.13" defer></script>
-  <script src="app.js?v=2.13" defer></script>
+  <link rel="icon" href="assets/mark.svg?v=3.0" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=3.0">
+  <script src="config.js?v=3.0" defer></script>
+  <script src="app.js?v=3.0" defer></script>
+  <script src="motion.js?v=3.0" defer></script>
 </head>
-<body>
+<body class="home-page">
   <a class="skip" href="#main">Перейти к содержанию</a>
   <header class="header wrap">
-    <a class="brand" href="./" aria-label="Экспогород — главная"><img src="assets/mark.svg?v=2.13" alt="" width="34" height="34">ЭКСПОГОРОД<span>городской интерес</span></a>
+    <a class="brand" href="./" aria-label="Экспогород — главная"><img src="assets/mark.svg?v=3.0" alt="" width="34" height="34">ЭКСПОГОРОД<span>городской интерес</span></a>
     <nav class="header-nav" aria-label="Разделы страницы"><a class="about-link" href="./" aria-current="page">Опрос</a><a class="about-link" href="analytics.html">Аналитика</a><a class="about-link" href="territory.html">Территория</a><a class="about-link" href="#about">Об исследовании <span aria-hidden="true">↗</span></a></nav>
   </header>
   <main id="main">
     <section class="hero wrap" aria-labelledby="title">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="badge">Опрос</span> Учебное исследование · Москва и область</p>
+        <p class="eyebrow"><span class="badge">Опрос</span> Дипломное исследование · Щербинка</p>
+        <p class="hero-context">Экспогород — архитектурный проект о будущем территории экспериментального железнодорожного кольца. Начинаем с вашего опыта.</p>
         <h1 id="title">Какие места<br>хочется<br><em>посещать?</em></h1>
-        <p class="lead">Расскажите, как вы проводите свободное время и что делает поездку в новое место интересной для вас.</p>
-        <div class="hero-action"><button id="start" class="primary" type="button">Пройти опрос <span aria-hidden="true">↗</span></button><span class="duration">Около 3–5 минут<br><small>для участников от 18 лет</small></span></div>
+        <p class="lead">Что вам интересно в городе и ради чего вы готовы приехать в новое место? Ответы помогут уточнить программу дипломного проекта.</p>
+        <div class="hero-action"><button id="start" class="primary" type="button">Пройти опрос <span aria-hidden="true">↘</span></button><span class="duration">3–5 минут<br><small>участие от 18 лет</small></span></div>
         <p id="availability" class="availability" role="status">Ответы сохраняются в Яндекс Формах. Регистрация для участия не требуется.</p>
-        <a class="project-intro-link" href="#about">О проекте «Экспогород» ↘</a>
+        <a class="project-intro-link" href="territory.html">Сначала посмотреть территорию <span aria-hidden="true">↗</span></a>
       </div>
-      <div class="art" aria-hidden="true">
-        <div class="diagram-title"><span class="badge">01</span> У каждого — свой повод приехать</div>
+      <div class="art hero-art" aria-hidden="true">
+        <div class="diagram-title"><span class="badge">01</span> У каждого — свой городской интерес</div>
         <svg viewBox="0 0 480 430" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter id="hero-glow" x="-90%" y="-90%" width="280%" height="280%"><feGaussianBlur stdDeviation="17"/></filter>
@@ -40,24 +42,24 @@
           <path d="M39 180 144 28l138 33 27 93-82 58-16 133-117 23-62-104Z" fill="url(#hatch)"/>
           <path d="m286 270 109-49 58 79-64 78-116-18Z" fill="#c6d875" fill-opacity=".55"/>
           <path d="m83 113 60-51 246 253-55 54Z" fill="#bcc6fb" fill-opacity=".8"/>
-          <path d="M23 321 188 264 277 134 458 71" fill="none" stroke="#414cda" stroke-width="4"/>
+          <path class="hero-route" d="M23 321 188 264 277 134 458 71" fill="none" stroke="#414cda" stroke-width="4"/>
           <g transform="rotate(28 240 215)" fill="#fff" fill-opacity=".7" stroke="#171717">
             <ellipse cx="240" cy="215" rx="112" ry="155" stroke-width="2"/><ellipse cx="240" cy="215" rx="98" ry="141" fill="none" stroke-width="1"/>
           </g>
           <path d="m95 127 236 223M161 354 315 81" stroke="#171717" stroke-width="1" stroke-dasharray="4 5" fill="none"/>
-          <circle cx="240" cy="215" r="48" fill="#bcc6fb" fill-opacity=".72" stroke="#414cda" stroke-width="1.9"/>
+          <circle class="hero-center" cx="240" cy="215" r="48" fill="#bcc6fb" fill-opacity=".72" stroke="#414cda" stroke-width="1.9"/>
           <g transform="translate(240 215)" fill="none" stroke="#171717" stroke-width="1.9">
             <ellipse rx="31" ry="12"/><ellipse rx="31" ry="12" transform="rotate(60)"/><ellipse rx="31" ry="12" transform="rotate(120)"/><circle r="4" fill="#171717"/>
           </g>
-          <g transform="translate(105 116)">
+          <g class="hero-symbol hero-symbol-pink" transform="translate(105 116)">
             <path d="m-35 0 18-31h35L36 0 18 31h-35Z" fill="#fe96c1" fill-opacity=".72" stroke="#171717" stroke-width="1.5"/>
             <path d="M-16-14h32v28h-32Zm0 22 9-11 9 9 5-6 9 8" fill="none" stroke="#171717" stroke-width="1.9"/><circle cx="7" cy="-6" r="3" fill="#171717"/>
           </g>
-          <g transform="translate(363 312)">
+          <g class="hero-symbol hero-symbol-lime" transform="translate(363 312)">
             <path d="m-35 0 18-31h35L36 0 18 31h-35Z" fill="#c6d875" fill-opacity=".72" stroke="#171717" stroke-width="1.5"/>
             <path d="M-11 17C-26-7-1-21 16-18c3 22-6 37-27 35ZM-13 19 10-10" fill="none" stroke="#171717" stroke-width="1.9"/>
           </g>
-          <g transform="translate(337 101)">
+          <g class="hero-symbol hero-symbol-lavender" transform="translate(337 101)">
             <path d="m-35 0 18-31h35L36 0 18 31h-35Z" fill="#bcc6fb" fill-opacity=".72" stroke="#171717" stroke-width="1.5"/>
             <path d="M-15-13h30v26h-30Zm-7-7v34m-2 5h38" fill="none" stroke="#171717" stroke-width="1.9"/>
           </g>
@@ -70,29 +72,37 @@
         <div class="diagram-legend"><span><i class="swatch science"></i>Познание</span><span><i class="swatch events"></i>События</span><span><i class="swatch nature"></i>Отдых</span><small>Условная схема</small></div>
       </div>
     </section>
-    <section class="facts wrap" aria-label="Участие в опросе">
-      <div><span class="number">01</span><h2>Ваш повседневный опыт</h2><p>Не нужны специальные знания.<br>Важны ваши привычки и предпочтения.</p></div>
-      <div><span class="number">02</span><h2>Без имени и контактов</h2><p>Анкета не спрашивает телефон,<br>точный адрес или геолокацию.</p></div>
-      <div><span class="number">03</span><h2>Добровольное участие</h2><p>Можно пропустить вопрос<br>или прекратить заполнение.</p></div>
+    <section class="participation wrap" aria-label="Участие в опросе">
+      <p><span aria-hidden="true">01</span> Без специальных знаний</p>
+      <p><span aria-hidden="true">02</span> Без имени и контактов</p>
+      <p><span aria-hidden="true">03</span> Участие добровольное</p>
     </section>
     <section id="survey" class="survey wrap" hidden aria-labelledby="survey-title">
       <div class="section-top"><div><p class="eyebrow"><span class="badge">02</span> Анкета</p><h2 id="survey-title">Ваш взгляд на город</h2></div><a id="form-link" class="text-link" target="_blank" rel="noopener noreferrer">Открыть отдельно ↗</a></div>
       <p class="embed-note">Если анкета не загрузилась, откройте её отдельно. Ответы сохраняются в Яндекс Формах.</p>
       <div id="form-mount"></div>
     </section>
-    <section id="about" class="about wrap" aria-labelledby="about-title">
-      <p class="eyebrow"><span class="badge">03</span> О проекте и опросе</p>
-      <div>
-        <h2 id="about-title">Экспогород.<br>Наука, выставки и город.</h2>
-        <h3>Что это за кольцо</h3>
+    <section class="explore wrap" aria-labelledby="explore-title" data-reveal>
+      <div class="explore-intro"><p class="eyebrow"><span class="badge">01</span> Изучить исследование</p><h2 id="explore-title">От ответов<br> к территории.</h2><p>Посмотрите, что выбирают участники и в каком городском окружении находится кольцо.</p></div>
+      <a class="explore-link" href="analytics.html"><span class="explore-number">01 / Ответы</span><h3>Что интересно<br>людям</h3><p>Выводы опроса, сочетания интересов и условия поездки.</p><span class="explore-arrow" aria-hidden="true">↗</span></a>
+      <a class="explore-link" href="territory.html"><span class="explore-number">02 / Карта</span><h3>Как устроена<br>территория</h3><p>Площадки Москвы, экспериментальное кольцо и его окружение.</p><span class="explore-arrow" aria-hidden="true">↗</span></a>
+    </section>
+    <section id="about" class="about wrap" aria-labelledby="about-title" data-reveal>
+      <div><p class="eyebrow"><span class="badge">02</span> О проекте</p><h2 id="about-title">Кольцо.<br> Город.<br> Новые связи.</h2></div>
+      <div class="about-copy">
+        <h3>Территория с научной историей</h3>
         <p>Экспериментальное кольцо ВНИИЖТ в Щербинке — железнодорожный испытательный полигон. Здесь проверяют поезда, пути и оборудование в реальных условиях.</p>
-        <h3>Что предлагается</h3>
-        <p>В дипломном проекте предлагается развить эту территорию как «Экспогород» — место, где можно знакомиться с наукой и технологиями, посещать выставки и события, учиться и отдыхать. Идея — связать научную историю кольца с повседневной жизнью города.</p>
-        <h3>Зачем нужен опрос</h3>
-        <p>Опрос поможет понять, какие занятия людям интересны, ради чего они готовы приехать и что хотят совместить в одной поездке. Ответы помогут уточнить замысел проекта. Важны и интерес, и сомнения, и отсутствие желания посещать такое место.</p>
-        <p class="about-links"><a href="territory.html">Посмотреть кольцо на карте ↗</a><a href="https://www.vniizht.ru/about/scientific-centers-and-branches/experimental-ring/" target="_blank" rel="noopener noreferrer">О полигоне на сайте ВНИИЖТ ↗</a></p>
-        <p class="privacy">Это учебная архитектурная концепция. Участие в опросе добровольное; ответы используются в обобщённом виде и не представляют мнение всех жителей. Страница не использует собственные счётчики и не запрашивает геолокацию. При открытии анкеты используются Яндекс Формы и правила этого сервиса.</p>
+        <h3>Экспогород — дипломная концепция</h3>
+        <p>Исследую, как связать научную историю этой территории с жизнью города. Какие новые занятия могли бы появиться здесь и как люди могли бы пользоваться этим местом — вопросы, на которые проект ещё ищет ответы.</p>
+        <h3>Ваш опыт помогает уточнить замысел</h3>
+        <p>Опрос посвящён городскому досугу, интересам и условиям поездки. Важны любые ответы: интерес, сомнения и отсутствие желания приехать.</p>
+        <p class="about-links"><a href="https://www.vniizht.ru/about/scientific-centers-and-branches/experimental-ring/" target="_blank" rel="noopener noreferrer">О полигоне на сайте ВНИИЖТ ↗</a></p>
+        <details class="home-method"><summary>Как используются ответы <span aria-hidden="true">+</span></summary><p>Это учебная архитектурная концепция. Участие добровольное; ответы используются в обобщённом виде и не представляют мнение всех жителей. Страница не использует собственные счётчики и не запрашивает геолокацию. Анкета работает в Яндекс Формах по правилам этого сервиса.</p></details>
       </div>
+    </section>
+    <section class="author wrap" aria-labelledby="author-title" data-reveal>
+      <img src="assets/author.png" width="640" height="640" alt="Елисей Макеев" loading="lazy" decoding="async">
+      <div><p class="eyebrow">Автор проекта</p><h2 id="author-title">Елисей Макеев</h2><p>Работаю над Экспогородом в рамках архитектурного диплома. В канале делюсь процессом, схемами и тем, как складывается проект.</p><a class="author-telegram" href="https://t.me/makeev_architect" target="_blank" rel="noopener noreferrer">@makeev_architect <span aria-hidden="true">↗</span></a></div>
     </section>
   </main>
   <footer class="footer wrap"><span>ЭКСПОГОРОД</span><span>Учебное исследование · 2026</span><a href="#main">Наверх ↑</a></footer>

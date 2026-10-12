@@ -11,6 +11,7 @@
   const node = (tag, text, className) => { const el = document.createElement(tag); if (text !== undefined) el.textContent = text; if (className) el.className = className; return el; };
   const svg = (tag, attrs = {}, text) => { const el = document.createElementNS(svgNS, tag); for (const [key,value] of Object.entries(attrs)) el.setAttribute(key, value); if (text !== undefined) el.textContent = text; return el; };
   let dataset;
+  let selectedInterest = null;
   function validate(data) {
     if (data?.schemaVersion !== 1 || !integer(data.totalResponses) || !Number.isFinite(Date.parse(data.sourceAsOf)) || !Number.isFinite(Date.parse(data.generatedAt))) throw new Error('Invalid snapshot');
     const { interested, network } = data;
@@ -29,14 +30,24 @@
       if (Math.abs(edge.jaccard - edge.count / (counts.get(edge.source) + counts.get(edge.target) - edge.count)) > 0.000050001) throw new Error('Inconsistent Jaccard');
       pairs.add(pair);
     }
+    window.EXPO_CHARTS?.validateMobility(data.mobility, data.totalResponses);
     return data;
+  }
+  function chooseInterest(id) {
+    if (!dataset) return;
+    selectedInterest = selectedInterest === id ? null : id;
+    const focusId = document.activeElement?.id;
+    renderGraph();
+    if (focusId?.startsWith('graph-node-')) byId(focusId)?.focus();
   }
   function renderGraph() {
     const { network } = dataset;
     const minimum = Number(byId('network-threshold').value);
     const edges = network.edges.filter((edge) => edge.count >= minimum);
+    const shown = window.EXPO_CHARTS.focusedEdges(network, minimum, selectedInterest);
+    const neighbors = new Set(selectedInterest ? [selectedInterest, ...shown.flatMap((edge) => [edge.source, edge.target])] : network.nodes.map((item) => item.id));
     const canvas = byId('network-svg');
-    canvas.replaceChildren(svg('title', {id:'network-svg-title'}, 'Связи между поводами приехать'), svg('desc', {id:'network-svg-desc'}, `Ответов на вопрос: ${network.base}. Связей: ${edges.length}. Минимум совместных выборов: ${minimum}. Нумерация узлов соответствует списку рядом; точные значения приведены в таблице ниже.`));
+    canvas.replaceChildren(svg('title', {id:'network-svg-title'}, 'Связи между поводами приехать'), svg('desc', {id:'network-svg-desc'}, `Ответов на вопрос: ${network.base}. Связей при выбранном пороге: ${shown.length}. Минимум совместных выборов: ${minimum}. Нажмите круг или название интереса, чтобы выделить его связи. Точные числа указаны в списке.`));
     const defs = svg('defs');
     const glow = svg('filter', {id:'network-glow', x:'-100%',y:'-100%',width:'300%',height:'300%'}); glow.append(svg('feGaussianBlur',{stdDeviation:10})); defs.append(glow); canvas.append(defs);
     canvas.append(svg('ellipse',{cx:240,cy:200,rx:170,ry:144,fill:'none',stroke:'#999','stroke-width':1,'stroke-dasharray':'3 6'}));
@@ -52,17 +63,31 @@
       const maxEdge = Math.max(1,...edges.map((edge) => edge.count));
       for (const edge of edges) {
         const a = points.get(edge.source); const b = points.get(edge.target);
-        const line = svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#414cda','stroke-opacity':.48,'stroke-width':1.5+5*edge.count/maxEdge});
+        const relevant = !selectedInterest || edge.source === selectedInterest || edge.target === selectedInterest;
+        const line = svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#414cda','stroke-opacity':selectedInterest ? relevant ? .82 : .09 : .48,'stroke-width':1.5+5*edge.count/maxEdge, class:`graph-edge${relevant ? ' is-relevant' : ''}`});
         const labels = network.nodes.filter((item) => [edge.source,edge.target].includes(item.id)).map((item) => item.label);
         line.append(svg('title',{},`${labels.join(' + ')}. Совместных выборов: ${edge.count}; Жаккар ${number(edge.jaccard*100)}%.`)); canvas.append(line);
       }
       const max = Math.max(1,...network.nodes.map((item) => item.count));
       network.nodes.forEach((item,i) => {
         const {x,y} = points.get(item.id); const radius = item.count ? 17+16*Math.sqrt(item.count/max) : 13;
-        if (item.count) canvas.append(svg('circle',{cx:x,cy:y,r:radius+9,fill:palette[item.id],filter:'url(#network-glow)',opacity:.6}));
-        const group = svg('g');
+        const relevant = neighbors.has(item.id);
+        if (item.count && relevant) canvas.append(svg('circle',{cx:x,cy:y,r:radius+9,fill:palette[item.id],filter:'url(#network-glow)',opacity:selectedInterest===item.id ? .85 : .4,'aria-hidden':'true'}));
+        const group = svg('g',{id:`graph-node-${item.id}`,role:'button',tabindex:0,'aria-label':`${item.label}. Выборов: ${item.count}. Показать связи`,'aria-pressed':selectedInterest===item.id,class:`graph-node${selectedInterest===item.id ? ' is-selected' : ''}${relevant ? '' : ' is-muted'}`});
+        group.addEventListener('click',()=>chooseInterest(item.id));
+        group.addEventListener('keydown',(event)=>{if(event.key==='Enter' || event.key===' '){event.preventDefault();chooseInterest(item.id);}if(event.key==='Escape'){selectedInterest=null;renderGraph();byId(`graph-node-${item.id}`)?.focus();}});
         group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`),svg('circle',{cx:x,cy:y,r:radius,fill:item.count?palette[item.id]:'#f5f5f5','fill-opacity':item.count ? .72 : 1,stroke:'#171717','stroke-width':1.8}),svg('text',{x,y:y+6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
       });
+    }
+    byId('network-reset').disabled = !selectedInterest;
+    document.querySelectorAll('.network-choice').forEach((button)=>{const active=button.dataset.interest===selectedInterest;button.setAttribute('aria-pressed',active);button.classList.toggle('is-selected',active);});
+    const selected = network.nodes.find((item)=>item.id===selectedInterest);
+    byId('network-selected').textContent = selected ? `${selected.label}: ${selected.count} из ${network.base} ответов. Связей при выбранном пороге: ${shown.length}.` : 'Все интересы. Выберите один, чтобы посмотреть его сочетания.';
+    const connections = byId('network-connections'); connections.replaceChildren();
+    if(selected) {
+      const labels = new Map(network.nodes.map((item)=>[item.id,item.label]));
+      shown.slice().sort((a,b)=>b.count-a.count).forEach((edge)=>{const row=node('li');row.append(node('span',labels.get(edge.source===selected.id?edge.target:edge.source)),node('strong',`${edge.count} из ${network.base} вместе`));connections.append(row);});
+      if(!shown.length) connections.append(node('li','При этом пороге сочетаний нет. Попробуйте уменьшить порог.'));
     }
     const tableMount = byId('network-table'); tableMount.replaceChildren();
     if (!edges.length) { tableMount.append(node('p',hasSelections ? 'При выбранном пороге совместных выборов пока нет. Отдельные интересы остаются видны на схеме.' : 'Связей для сравнения пока нет.')); return; }
@@ -82,7 +107,7 @@
     status.textContent=`${data.totalResponses ? `${number(data.totalResponses)} ${formsWord(data.totalResponses)} в срезе · предварительные данные.` : 'Анкет без известных тестов пока нет — сбор начинается.'} Данные проверены: ${date} МСК. Повторные заполнения возможны: это число анкет, а не разных людей.`;
     byId('network-base').textContent=`Ответов на вопрос: ${number(data.network.base)}. Можно выбрать несколько вариантов.`;
     const list=byId('network-nodes');list.replaceChildren();
-    data.network.nodes.forEach((item,i)=>{const row=node('li');const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.background=`${palette[item.id]}bf`;const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');row.append(key,node('span',item.label),count);list.append(row);});
+    data.network.nodes.forEach((item,i)=>{const row=node('li');const button=node('button',undefined,'network-choice');button.type='button';button.dataset.interest=item.id;button.setAttribute('aria-pressed','false');button.addEventListener('click',()=>chooseInterest(item.id));button.addEventListener('keydown',(event)=>{if(event.key==='Escape'){selectedInterest=null;renderGraph();}});const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.background=`${palette[item.id]}bf`;const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');button.append(key,node('span',item.label),count);row.append(button);list.append(row);});
     const q=data.quality || {};
     const before=integer(q.beforeSelectionChange)?q.beforeSelectionChange:0;
     if(before) status.textContent += ` До снятия лимитов выбора получено анкет: ${number(before)}. Это нужно учитывать при сравнении интересов.`;
@@ -92,6 +117,7 @@
     download.disabled=!data.network.nodes.some((item)=>item.count>0);
     renderGraph();
     window.EXPO_CHARTS?.render(data);
+    window.EXPO_MOTION?.refresh();
   }
   const download = node('button','Скачать схему SVG ↓','primary graph-download');
   download.type='button'; download.disabled=true; download.style.marginTop='16px';
@@ -104,7 +130,11 @@
     const text=(x,y,value,size=12,weight=400)=>svg('text',{x,y,'font-size':size,'font-weight':weight,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},value);
     const date=new Intl.DateTimeFormat('ru-RU',{dateStyle:'short',timeStyle:'short',timeZone:'Europe/Moscow'}).format(new Date(dataset.sourceAsOf));
     exported.append(text(20,30,'ЭКСПОГОРОД / СВЯЗИ ИНТЕРЕСОВ',19,700),text(20,51,`Срез: ${date} МСК · ответов: ${dataset.network.base}`),text(20,69,`Минимум совместных выборов: ${byId('network-threshold').value}`));
-    const graph=byId('network-svg').cloneNode(true);graph.setAttribute('x',0);graph.setAttribute('y',83);graph.setAttribute('width',480);graph.setAttribute('height',400);exported.append(graph);
+    const graph=byId('network-svg').cloneNode(true);graph.setAttribute('x',0);graph.setAttribute('y',83);graph.setAttribute('width',480);graph.setAttribute('height',400);graph.setAttribute('role','img');
+    // Export the complete graph at the active threshold, independent of UI focus.
+    graph.querySelectorAll('.graph-edge').forEach((edge)=>edge.setAttribute('stroke-opacity',.48));
+    graph.querySelectorAll('.graph-node').forEach((item)=>{item.removeAttribute('class');item.removeAttribute('tabindex');item.removeAttribute('role');item.removeAttribute('aria-pressed');});
+    graph.querySelector('desc').textContent=`Ответов: ${dataset.network.base}. Порог совместного выбора: ${byId('network-threshold').value}. Числа и названия интересов приведены ниже.`;exported.append(graph);
     let y=506;
     dataset.network.nodes.forEach((item,i)=>{
       exported.append(svg('rect',{x:20,y:y-14,width:24,height:24,fill:palette[item.id],'fill-opacity':.75,stroke:'#171717','stroke-width':1.5}),text(24,y+2,String(i+1).padStart(2,'0'),11,700));
@@ -119,6 +149,7 @@
     const url=URL.createObjectURL(blob);const link=node('a');link.href=url;link.download=`expogorod-network-${dataset.sourceAsOf.slice(0,10)}.svg`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
   });
   byId('network-threshold').addEventListener('change',()=>{if(dataset)renderGraph();});
+  byId('network-reset').addEventListener('click',()=>{selectedInterest=null;if(dataset)renderGraph();});
   fetch('results.json',{cache:'no-store'}).then((response)=>{if(!response.ok)throw new Error('Unavailable snapshot');return response.json();}).then(validate).then(render).catch(()=>{
     document.querySelectorAll('.chart-panel > div').forEach((el)=>{el.textContent='Проверенный срез недоступен. Диаграмма появится после загрузки данных.';});
     status.textContent='Срез результатов сейчас недоступен. Анкета продолжает работать; показатели появятся после проверки данных.';

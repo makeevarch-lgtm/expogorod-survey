@@ -25,6 +25,77 @@
   };
   const note = (text) => html('p', text, 'chart-note');
 
+  // Optional extension: old anonymous snapshots remain usable without mobility.
+  function validateMobility(mobility, total) {
+    if (mobility === undefined) return;
+    if (!mobility || typeof mobility !== 'object' || Array.isArray(mobility)) throw new Error('Invalid mobility');
+    const integer = (value) => Number.isInteger(value) && value >= 0;
+    for (const id of ['travelTime', 'transport', 'walkTime']) {
+      const question = mobility[id];
+      if (!question || typeof question.title !== 'string' || !question.title.trim() || question.title.length > 200 || !['base', 'missing', 'invalid'].every((key) => integer(question[key])) || question.base + question.missing + question.invalid !== total || !Array.isArray(question.options) || !question.options.length) throw new Error('Invalid mobility base');
+      const ids = new Set(); let sum = 0;
+      for (const option of question.options) {
+        if (typeof option.id !== 'string' || !option.id.trim() || ids.has(option.id) || typeof option.label !== 'string' || !option.label.trim() || option.label.length > 200 || !integer(option.count) || option.count > question.base) throw new Error('Invalid mobility option');
+        ids.add(option.id); sum += option.count;
+      }
+      if (sum !== question.base) throw new Error('Inconsistent mobility counts');
+    }
+  }
+
+  function strongest(items) {
+    const maximum = Math.max(0, ...items.map((item) => item.count));
+    return maximum ? items.filter((item) => item.count === maximum) : [];
+  }
+
+  function summarize(data) {
+    const leaders = strongest(data.network.nodes);
+    const pairs = strongest(data.network.edges);
+    const labels = new Map(data.network.nodes.map((item) => [item.id, item.label]));
+    const cards = [];
+    if (leaders.length) cards.push({ title: leaders.length === 1 ? 'Чаще всего выбирают' : 'Лидируют несколько интересов', value: `${leaders[0].count} из ${data.network.base}`, text: leaders.map((item) => item.label).join(' · ') });
+    if (pairs.length) cards.push({ title: pairs.length === 1 ? 'Самая частая пара' : 'Самые частые пары', value: `${pairs[0].count} из ${data.network.base}`, text: pairs.map((pair) => `${labels.get(pair.source)} + ${labels.get(pair.target)}`).join('; ') });
+    const transport = data.mobility?.transport;
+    const modes = strongest(transport?.options || []);
+    if (modes.length) cards.push({ title: modes.length === 1 ? 'Чаще выбранный транспорт' : 'Транспорт: равное число выборов', value: `${modes[0].count} из ${transport.base}`, text: modes.map((mode) => mode.label).join(' · ') });
+    else if (data.interested.base) cards.push({ title: 'Хотели бы приехать', value: `${data.interested.count} из ${data.interested.base}`, text: 'Ответы «определённо» и «скорее посетил(а) бы» на вопрос о посещении.' });
+    const hypothesis = pairs.length ? `Гипотеза для проекта: проверить совместное размещение и сценарий посещения для сочетания «${labels.get(pairs[0].source)} + ${labels.get(pairs[0].target)}». Совместный выбор ещё не доказывает, что эти занятия будут совмещать в поездке.${pairs.length > 1 ? ' Другие пары с таким же числом выборов требуют такой же проверки.' : ''}` : 'Гипотеза для проекта появится, когда в ответах возникнут сочетания интересов.';
+    return { cards, hypothesis };
+  }
+
+  function focusedEdges(network, minimum, selected) {
+    return network.edges.filter((edge) => edge.count >= minimum && (!selected || edge.source === selected || edge.target === selected));
+  }
+
+  function renderInsights(data) {
+    const target = mount('insight-cards');
+    if (!target) return;
+    const summary = summarize(data);
+    summary.cards.forEach((card) => { const article = html('article', undefined, 'insight-card'); article.setAttribute('data-reveal',''); article.append(html('h3', card.title), html('strong', card.value), html('p', card.text)); target.append(article); });
+    if (!summary.cards.length) target.append(html('p', 'Пока недостаточно ответов для наблюдений.'));
+    const hypothesis = document.getElementById('project-hypothesis');
+    if (hypothesis) hypothesis.textContent = summary.hypothesis;
+  }
+
+  function renderMobility(data) {
+    const target = mount('mobility-charts');
+    if (!target) return;
+    if (!data.mobility) { target.append(note('В этом срезе данные о доступности ещё не опубликованы.')); return; }
+    ['travelTime', 'transport', 'walkTime'].forEach((id, index) => {
+      const question = data.mobility[id];
+      const panel = html('article', undefined, 'chart-panel mobility-panel');
+      panel.setAttribute('data-reveal','');
+      panel.append(html('h3', question.title));
+      const list = html('ul', undefined, 'mobility-bars');
+      question.options.forEach((option) => {
+        const row = html('li');
+        const track = html('span', undefined, 'interest-bar-track'); track.setAttribute('aria-hidden', 'true');
+        const fill = html('span'); fill.style.width = `${question.base ? 100 * option.count / question.base : 0}%`; fill.style.backgroundColor = ['#bcc6fbbf', '#fe96c1bf', '#c6d875bf'][index]; track.append(fill);
+        row.append(html('span', option.label, 'mobility-label'), html('strong', question.base ? `${option.count} из ${question.base} · ${percent(option.count, question.base)}` : '—', 'mobility-value'), track); list.append(row);
+      });
+      panel.append(list, note(`Основание: ${question.base} ${question.base ? 'корректных ответов' : 'ответов — данных пока нет'}. Пропущено: ${question.missing}; исключено: ${question.invalid}. Один вариант в каждой анкете; «трудно сказать» учитывается отдельно.`)); target.append(panel);
+    });
+  }
+
   function renderBars(network) {
     const target = mount('interest-bars');
     if (!target) return;
@@ -151,7 +222,9 @@
   }
 
   // Data is validated by results.js before being passed to this presentation layer.
-  window.EXPO_CHARTS = Object.freeze({ render(data) {
+  window.EXPO_CHARTS = Object.freeze({ validateMobility, summarize, focusedEdges, render(data) {
+    renderInsights(data);
+    renderMobility(data);
     renderBars(data.network);
     renderVisit(data.interested);
     renderShare(data.network);

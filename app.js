@@ -36,6 +36,9 @@ if (formUrl) {
       frame.referrerPolicy = 'no-referrer';
       document.getElementById('form-mount').append(frame);
     }
+    const surveyTitle = document.getElementById('survey-title');
+    surveyTitle.setAttribute('tabindex', '-1');
+    surveyTitle.focus({ preventScroll: true });
     survey.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   });
 } else {
