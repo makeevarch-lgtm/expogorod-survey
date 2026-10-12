@@ -10,7 +10,7 @@
   const tour = [
     {title:'Городской контекст', camera:'Обзор Москвы', description:'Научные, выставочные и образовательные функции уже существуют в городе. Выберите метку, чтобы посмотреть, как они сочетаются на одной площадке.', next:'К кольцу →'},
     {title:'Экспериментальное кольцо', camera:'Кольцо и окружение', description:'Три замкнутых железнодорожных пути в Щербинке окружают большую территорию. Здесь исследуется идея Экспогорода — сочетания науки, выставок и городской жизни.', insight:'Синяя заливка показывает пространство внутри внешнего пути, а не границу проектирования. Серые объёмы — существующая застройка, высоты могут быть оценочными.', next:'ВНИИЖТ и МЦД-2 →'},
-    {title:'ВНИИЖТ и МЦД-2', camera:'Корпуса ВНИИЖТ · Щербинка · МЦД-2', description:'Здесь видны существующий комплекс ВНИИЖТ, его испытательные и лабораторные корпуса, станция Щербинка и основной железнодорожный ход. Нажмите на подпись, чтобы узнать, что это за объект.', insight:'Синий — Курское направление, по которому проходит МЦД-2. Пунктир — соединительный путь к испытательному кольцу. Выделение комплекса показывает существующее положение; доступность проходов по карте не определяется.', next:'Снова Москва ↺'}
+    {title:'ВНИИЖТ и МЦД-2', camera:'Корпуса ВНИИЖТ · Щербинка · МЦД-2', description:'Номера на карте соответствуют объектам в списке. Наведите на название или нажмите, чтобы выделить объект.', insight:'Синий — Курское направление, по которому проходит МЦД-2. Пунктир — соединительный путь к испытательному кольцу. Выделение комплекса показывает существующее положение; доступность проходов по карте не определяется.', next:'Снова Москва ↺'}
   ];
   function tourCopy(){
     const step=tour[tourStep];
@@ -22,6 +22,8 @@
     $('gis-tour-back').disabled=tourStep===0;
     $('gis-camera-label').textContent=step.camera;
     $('gis-context-legend').hidden=tourStep!==2;
+    $('gis-context-objects').hidden=tourStep!==2;
+    $('gis-tour-insight').hidden=tourStep===2;
     document.querySelector('.gis-legend:not(#gis-context-legend)').hidden=tourStep===2;
     document.querySelectorAll('[data-tour]').forEach(b=>{if(Number(b.dataset.tour)===tourStep)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
   }
@@ -33,7 +35,7 @@
   }
   function setTour(index){
     tourStep=Math.max(0,Math.min(2,index));tourCopy();
-    markers.forEach(m=>{if(m.id==='station')m.button.hidden=tourStep!==2;});
+    markers.forEach(m=>{if(m.id==='station')m.button.hidden=tourStep!==2;if(m.id==='ring')m.button.hidden=tourStep===2;});
     if(!ready)return;
     detail(null);tilted=tourStep!==0;$('gis-3d').setAttribute('aria-pressed',String(tilted));
     const padding=Math.max(30,Math.min(70,$('gis-map').clientWidth*.1));
@@ -101,9 +103,12 @@
   // Label collisions affect captions only; geographic marker positions never move.
   function updateLabels(){
     if(!map)return;
-    if(tourStep===2){layoutContextCallouts();return;}
-    $('gis-callout-lines')?.replaceChildren();
-    [...contextMarkers,...markers].forEach(m=>{m.button.classList.remove('is-callout');const label=m.button.querySelector('.gis-pin-label, .gis-context-label');label.style.removeProperty('left');label.style.removeProperty('top');});
+    if(tourStep===2){
+      contextMarkers.forEach(m=>{m.button.classList.toggle('has-label',m.id===selected);m.button.classList.toggle('is-selected',m.id===selected);});
+      markers.forEach(m=>m.button.classList.toggle('has-label',m.id==='station'));
+      document.querySelectorAll('[data-context-id]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.contextId===selected)));
+      return;
+    }
     const bounds=$('gis-map').getBoundingClientRect(),occupied=[];
     markers.forEach(m=>m.button.classList.remove('has-label'));
     contextMarkers.forEach(m=>m.button.classList.remove('has-label','label-below'));
@@ -122,29 +127,19 @@
       else occupied.push(r);
     }
   }
-  function layoutContextCallouts(){
-    const frame=$('gis-map').getBoundingClientRect();
-    if(!frame.width||!frame.height)return;
-    let leaders=$('gis-callout-lines');
-    if(!leaders){leaders=document.createElementNS('http://www.w3.org/2000/svg','svg');leaders.id='gis-callout-lines';leaders.setAttribute('aria-hidden','true');$('gis-map').append(leaders);}
-    leaders.setAttribute('viewBox',`0 0 ${frame.width} ${frame.height}`);leaders.replaceChildren();
-    markers.forEach(m=>m.button.classList.remove('has-label'));
+  function buildContextList(){
+    const list=$('gis-context-objects');list.replaceChildren();
     const all=[...contextMarkers,...markers.filter(m=>m.id==='station')];
-    const items=all.map(m=>{
-      m.button.classList.add('has-label','is-callout');m.button.classList.remove('label-below');
-      const label=m.button.querySelector('.gis-context-label,.gis-pin-label');label.style.marginLeft='0px';
-      const pin=m.button.getBoundingClientRect(),r=label.getBoundingClientRect();
-      return {id:m.id,x:(pin.left+pin.right)/2-frame.left,y:(pin.top+pin.bottom)/2-frame.top,width:r.width,height:r.height,priority:m.id==='station'?10:m.priority||4};
+    all.forEach(m=>{
+      const row=el('li'),button=el('button',undefined,'gis-object-button');button.type='button';button.dataset.contextId=m.id;button.setAttribute('aria-pressed','false');
+      const number=el('span',m.number||'D2','gis-object-number');number.style.setProperty('--context-color',m.id==='station'?'#ce2a83':getComputedStyle(m.button).getPropertyValue('--context-color'));
+      button.append(number,el('span',m.button.getAttribute('aria-label').replace('Существующая станция ','Станция ')));
+      button.addEventListener('click',()=>m.button.click());
+      const highlight=()=>m.button.classList.add('is-highlighted');
+      const clear=()=>m.button.classList.remove('is-highlighted');
+      button.addEventListener('mouseenter',highlight);button.addEventListener('mouseleave',clear);button.addEventListener('focus',highlight);button.addEventListener('blur',clear);
+      row.append(button);list.append(row);
     });
-    const layout=window.EXPO_CALLOUTS.arrangeCallouts(items,frame.width,frame.height);
-    for(const r of layout){
-      const m=all.find(m=>m.id===r.id),label=m.button.querySelector('.gis-context-label,.gis-pin-label');
-      label.style.left=(r.left-r.x+m.button.clientWidth/2)+'px';label.style.top=(r.top-r.y+m.button.clientHeight/2)+'px';
-      const tx=Math.max(r.left,Math.min(r.left+r.width,r.x)),ty=Math.max(r.top,Math.min(r.top+r.height,r.y));
-      const line=document.createElementNS('http://www.w3.org/2000/svg','path');
-      line.setAttribute('d',`M ${r.x} ${r.y} L ${r.x} ${ty} L ${tx} ${ty}`);
-      line.setAttribute('stroke',m.id==='station'?'#414cda':getComputedStyle(m.button).getPropertyValue('--context-color')||'#777ed0');leaders.append(line);
-    }
   }
   function marker(point,id,name,functions,focusReason,shortName){
     const button=el('button',undefined,'gis-pin'+(id==='ring'?' gis-pin-ring':id==='station'?' gis-pin-station':focusReason?' gis-pin-focus':''));
@@ -159,7 +154,8 @@
     const p=feature.properties;
     const button=el('button',undefined,'gis-context-marker '+(p.type||'campus'));
     button.type='button';button.hidden=true;button.setAttribute('aria-label',p.label);button.title=p.label;
-    button.append(el('span',p.label,'gis-context-label'));
+    const number=String(contextMarkers.length+1).padStart(2,'0');
+    button.append(el('span',number,'gis-context-number'),el('span',p.label,'gis-context-label'));
     button.addEventListener('click',()=>{
       detail(null);selected=String(feature.id);const target=$('gis-detail');target.hidden=false;
       target.replaceChildren(el('h3',p.label),el('p',p.description));
@@ -167,7 +163,7 @@
       updateLabels();
     });
     const marker=new maplibregl.Marker({element:button,anchor:'center'}).setLngLat(feature.geometry.coordinates).addTo(map);
-    contextMarkers.push({id:String(feature.id),marker,button,context:true,priority:p.priority||4});
+    contextMarkers.push({id:String(feature.id),marker,button,context:true,priority:p.priority||4,number});
   }
   function minimalBasemap(){
     for(const layer of map.getStyle().layers){
@@ -222,7 +218,7 @@
         map.addLayer({id:'context-main-line',type:'line',source:'rail-context',filter:['==',['get','kind'],'mcd-main'],layout:{visibility:'none','line-cap':'round','line-join':'round'},paint:{'line-color':'#414cda','line-width':['interpolate',['linear'],['zoom'],10,2,15,4.5],'line-opacity':.95}});
         railContext.features.filter(f=>f.properties.kind==='context-label').forEach(contextMarker);
         map.addLayer({id:'expo-ring-halo',type:'line',source:'expo-ring',filter:['==',['get','kind'],'ring'],paint:{'line-color':'#bcc6fb','line-width':['interpolate',['linear'],['zoom'],8,6,15,16],'line-opacity':.5,'line-blur':5}});map.addLayer({id:'expo-ring-line',type:'line',source:'expo-ring',filter:['==',['get','kind'],'ring'],paint:{'line-color':'#414cda','line-width':['interpolate',['linear'],['zoom'],8,2,15,3],'line-opacity':.9}});
-        marker(center,'ring','Экспериментальное кольцо',null,null,'Кольцо ВНИИЖТ');const station=geography.features.find(f=>f.properties.kind==='station');if(station)marker(station.geometry.coordinates,'station','Существующая станция Щербинка',null,null,'Станция Щербинка');catalog.items.forEach(i=>marker(i.coordinates,i.id,i.name,i.functions,i.focusReason,i.shortName));map.on('moveend',updateLabels);map.on('resize',updateLabels);ready=true;$('gis-map-status').hidden=true;table();setTour(tourStep);
+        marker(center,'ring','Экспериментальное кольцо',null,null,'Кольцо ВНИИЖТ');const station=geography.features.find(f=>f.properties.kind==='station');if(station)marker(station.geometry.coordinates,'station','Существующая станция Щербинка',null,null,'Станция Щербинка');catalog.items.forEach(i=>marker(i.coordinates,i.id,i.name,i.functions,i.focusReason,i.shortName));map.on('moveend',updateLabels);map.on('resize',updateLabels);ready=true;$('gis-map-status').hidden=true;buildContextList();table();setTour(tourStep);
       }catch(e){$('gis-map-status').hidden=false;$('gis-map-status').textContent='Не удалось отобразить все слои карты. Подборка площадок доступна в таблице.';}
     });
     setTimeout(()=>{if(!ready){$('gis-map-status').hidden=false;$('gis-map-status').textContent='Карта пока недоступна. Можно сравнить площадки в таблице или перезагрузить страницу.';}},20000);

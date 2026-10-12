@@ -112,10 +112,16 @@
 .gis-context-marker.label-below .gis-context-label{top:15px;bottom:auto}
 .gis-context-marker.label-below::after{top:7px;bottom:auto}
 
-/* All local context captions remain visible. The leader follows the map point. */
-#gis-callout-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:hidden}
-#gis-callout-lines path{fill:none;stroke-width:1;opacity:.8}
-.gis-context-marker.is-callout{z-index:5}
-.is-callout .gis-context-label,.gis-pin-station.is-callout .gis-pin-label{display:block!important;position:absolute;bottom:auto!important;transform:none!important;max-width:136px;z-index:7}
-.gis-context-marker.is-callout::after{display:none}
-@media(max-width:760px){.is-callout .gis-context-label,.gis-pin-station.is-callout .gis-pin-label{max-width:114px;font-size:10px}}
+/* The map stays clear; every object name is available in the adjacent key. */
+.gis-context-marker{width:23px;height:23px;border:1.5px solid var(--context-color)!important;background:#fffffff2!important;border-radius:50%!important;box-shadow:0 0 0 3px #ffffffaa;z-index:5}
+.gis-context-marker::before,.gis-context-marker::after{display:none!important}
+.gis-context-number{display:grid;place-items:center;width:100%;height:100%;font-size:9px;font-weight:700;line-height:1;color:#333;pointer-events:none}
+.gis-context-marker.is-selected,.gis-context-marker.is-highlighted{outline:2px solid var(--context-color);outline-offset:3px;z-index:8}
+.gis-context-marker.is-highlighted .gis-context-label{display:block}
+.gis-context-marker .gis-context-label{pointer-events:none;bottom:calc(100% + 10px);top:auto;z-index:9}
+.gis-context-objects{list-style:none;margin:12px 0 18px;padding:0;display:grid;gap:3px}
+.gis-context-objects[hidden]{display:none}
+.gis-object-button{display:flex!important;gap:9px;align-items:center;width:100%;text-align:left;background:transparent!important;border:0!important;padding:5px 0!important;min-height:31px;font-size:11px!important;line-height:1.35}
+.gis-object-button:hover,.gis-object-button[aria-pressed="true"]{background:#eceefb!important;box-shadow:none!important}
+.gis-object-number{display:grid;place-items:center;flex:none;width:23px;height:23px;border:1px solid var(--context-color);border-radius:50%;background:#fff;font-size:9px;font-weight:700}
+@media(max-width:760px){.gis-context-objects{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}.gis-object-button{font-size:11px!important}.gis-context-marker{width:21px;height:21px}}
