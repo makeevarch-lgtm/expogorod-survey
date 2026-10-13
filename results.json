@@ -1,35 +1,35 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-12T18:54:28+00:00",
-  "sourceAsOf": "2026-10-12T09:10:37+03:00",
-  "totalResponses": 21,
+  "generatedAt": "2026-10-13T06:14:41+00:00",
+  "sourceAsOf": "2026-10-13T09:14:41+03:00",
+  "totalResponses": 23,
   "interested": {
-    "count": 17,
-    "base": 19,
-    "percent": 89.5
+    "count": 19,
+    "base": 21,
+    "percent": 90.5
   },
   "network": {
-    "base": 18,
+    "base": 20,
     "nodes": [
       {
         "id": "technique",
         "label": "Демонстрация техники в действии",
-        "count": 4
+        "count": 5
       },
       {
         "id": "science",
         "label": "Интерактивная научная выставка",
-        "count": 9
+        "count": 11
       },
       {
         "id": "events",
         "label": "Крупная выставка или фестиваль",
-        "count": 14
+        "count": 15
       },
       {
         "id": "workshops",
         "label": "Лекции и мастер-классы",
-        "count": 11
+        "count": 12
       },
       {
         "id": "sport",
@@ -39,12 +39,12 @@
       {
         "id": "park",
         "label": "Прогулка в лесопарке",
-        "count": 10
+        "count": 11
       },
       {
         "id": "study",
         "label": "Учёба, исследование или профессиональная встреча",
-        "count": 7
+        "count": 9
       }
     ],
     "edges": [
@@ -52,127 +52,127 @@
         "source": "events",
         "target": "park",
         "count": 7,
-        "jaccard": 0.4118
+        "jaccard": 0.3684
       },
       {
         "source": "events",
         "target": "science",
-        "count": 7,
-        "jaccard": 0.4375
+        "count": 8,
+        "jaccard": 0.4444
       },
       {
         "source": "events",
         "target": "sport",
         "count": 2,
-        "jaccard": 0.1429
+        "jaccard": 0.1333
       },
       {
         "source": "events",
         "target": "study",
-        "count": 5,
-        "jaccard": 0.3125
+        "count": 6,
+        "jaccard": 0.3333
       },
       {
         "source": "events",
         "target": "technique",
         "count": 3,
-        "jaccard": 0.2
+        "jaccard": 0.1765
       },
       {
         "source": "events",
         "target": "workshops",
-        "count": 10,
-        "jaccard": 0.6667
+        "count": 11,
+        "jaccard": 0.6875
       },
       {
         "source": "park",
         "target": "science",
-        "count": 5,
-        "jaccard": 0.3571
-      },
-      {
-        "source": "park",
-        "target": "sport",
-        "count": 1,
-        "jaccard": 0.0909
-      },
-      {
-        "source": "park",
-        "target": "study",
         "count": 6,
-        "jaccard": 0.5455
+        "jaccard": 0.375
       },
       {
         "source": "park",
-        "target": "technique",
-        "count": 3,
-        "jaccard": 0.2727
-      },
-      {
-        "source": "park",
-        "target": "workshops",
-        "count": 5,
-        "jaccard": 0.3125
-      },
-      {
-        "source": "science",
         "target": "sport",
         "count": 1,
-        "jaccard": 0.1
+        "jaccard": 0.0833
       },
       {
-        "source": "science",
+        "source": "park",
         "target": "study",
-        "count": 3,
-        "jaccard": 0.2308
-      },
-      {
-        "source": "science",
-        "target": "technique",
-        "count": 3,
-        "jaccard": 0.3
-      },
-      {
-        "source": "science",
-        "target": "workshops",
         "count": 7,
         "jaccard": 0.5385
       },
       {
+        "source": "park",
+        "target": "technique",
+        "count": 4,
+        "jaccard": 0.3333
+      },
+      {
+        "source": "park",
+        "target": "workshops",
+        "count": 5,
+        "jaccard": 0.2778
+      },
+      {
+        "source": "science",
+        "target": "sport",
+        "count": 1,
+        "jaccard": 0.0833
+      },
+      {
+        "source": "science",
+        "target": "study",
+        "count": 5,
+        "jaccard": 0.3333
+      },
+      {
+        "source": "science",
+        "target": "technique",
+        "count": 4,
+        "jaccard": 0.3333
+      },
+      {
+        "source": "science",
+        "target": "workshops",
+        "count": 8,
+        "jaccard": 0.5333
+      },
+      {
         "source": "sport",
         "target": "study",
         "count": 1,
-        "jaccard": 0.125
+        "jaccard": 0.1
       },
       {
         "source": "sport",
         "target": "technique",
         "count": 1,
-        "jaccard": 0.2
+        "jaccard": 0.1667
       },
       {
         "source": "sport",
         "target": "workshops",
         "count": 2,
-        "jaccard": 0.1818
+        "jaccard": 0.1667
       },
       {
         "source": "study",
         "target": "technique",
-        "count": 1,
-        "jaccard": 0.1
+        "count": 2,
+        "jaccard": 0.1667
       },
       {
         "source": "study",
         "target": "workshops",
-        "count": 5,
-        "jaccard": 0.3846
+        "count": 6,
+        "jaccard": 0.4
       },
       {
         "source": "technique",
         "target": "workshops",
         "count": 2,
-        "jaccard": 0.1538
+        "jaccard": 0.1333
       }
     ]
   },
@@ -201,19 +201,19 @@
   "mobility": {
     "travelTime": {
       "title": "Дорога в одну сторону",
-      "base": 20,
+      "base": 22,
       "missing": 1,
       "invalid": 0,
       "options": [
         {
           "id": "under30",
           "label": "До 30 минут",
-          "count": 2
+          "count": 3
         },
         {
           "id": "minutes31to45",
           "label": "31–45 минут",
-          "count": 4
+          "count": 5
         },
         {
           "id": "minutes46to60",
@@ -244,14 +244,14 @@
     },
     "transport": {
       "title": "Предпочитаемый транспорт",
-      "base": 20,
+      "base": 22,
       "missing": 1,
       "invalid": 0,
       "options": [
         {
           "id": "public",
           "label": "Общественный транспорт",
-          "count": 15
+          "count": 17
         },
         {
           "id": "car",
@@ -277,7 +277,7 @@
     },
     "walkTime": {
       "title": "Пешком от станции",
-      "base": 20,
+      "base": 22,
       "missing": 1,
       "invalid": 0,
       "options": [
@@ -289,12 +289,12 @@
         {
           "id": "minutes6to10",
           "label": "6–10 минут",
-          "count": 2
+          "count": 3
         },
         {
           "id": "minutes11to15",
           "label": "11–15 минут",
-          "count": 9
+          "count": 10
         },
         {
           "id": "minutes16to20",
