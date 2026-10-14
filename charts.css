@@ -99,7 +99,7 @@
 .analytics-page .results-status{font-size:12px;line-height:1.4;margin:0 0 14px;padding:0;border:0;background:none}
 .analytics-page .metrics{margin:0 0 18px}
 .analytics-page .metric{padding:13px 18px;min-height:0}
-.analytics-page .metric strong{font-size:40px;line-height:1;margin:8px 0 0;letter-spacing:0;font-kerning:none;font-variant-numeric:tabular-nums}
+.analytics-page .metric strong{font-size:40px;line-height:1;margin:8px 0 0;letter-spacing:.04em;font-kerning:none;font-variant-numeric:lining-nums tabular-nums}
 .analytics-page .metric p{display:none}
 .analytics-page .metric-label{font-size:11px;gap:7px}
 .analytics-page .metric-label .icon{width:17px;height:17px}

@@ -29,7 +29,7 @@
     if (!/^\d[\d\s\u00a0\u202f]*(?:,\d+)?%?$/.test(original) || counterValues.get(element) === original) return;
     counterValues.set(element, original);
     const value = Number(original.replace(/[\s\u00a0\u202f%]/g, '').replace(',', '.'));
-    const suffix = original.endsWith('%') ? '%' : '';
+    const suffix = original.endsWith('%') ? (original.match(/[\s\u00a0\u202f]*%$/)?.[0] || '%') : '';
     const digits = original.includes(',') ? original.split(',')[1].replace('%','').length : 0;
     const formatter = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: digits, maximumFractionDigits: digits });
     const label = element.getAttribute('aria-label');

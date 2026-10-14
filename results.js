@@ -106,7 +106,7 @@
     dataset=data;
     if(testMode){byId('network-threshold').value='10';if(byId('metric-total-label'))byId('metric-total-label').textContent='Тестовых ответов';}
     byId('metric-total').textContent=number(data.totalResponses);
-    byId('metric-interest').textContent=data.interested.percent===null?'—':data.interested.base<10?`${number(data.interested.count)} из ${number(data.interested.base)}`:`${number(data.interested.percent)}%`;
+    byId('metric-interest').textContent=data.interested.percent===null?'—':data.interested.base<10?`${number(data.interested.count)} из ${number(data.interested.base)}`:`${number(data.interested.percent)} %`;
     byId('metric-interest-note').textContent=data.interested.base?`«Определённо» или «скорее посетил(а) бы»: ${number(data.interested.percent)}% (${number(data.interested.count)} из ${number(data.interested.base)}).${data.interested.base<10 ? ' Пока слишком мало анкет для общих выводов.' : ''}`:'Пока нет ответов на вопрос о желании приехать.';
     byId('metric-pairs').textContent=number(data.network.edges.length);
     const date=new Intl.DateTimeFormat('ru-RU',{dateStyle:'long',timeStyle:'short',timeZone:'Europe/Moscow'}).format(new Date(data.sourceAsOf));
