@@ -58,12 +58,11 @@
     if (element.matches('#metric-total, #metric-interest, #metric-pairs, [data-count]') && !/^\d[\d\s\u00a0\u202f]*(?:,\d+)?%?$/.test(element.textContent.trim())) return;
     seen.add(element);
     if (element.matches('.graph-edge')) {
-      const length = Math.hypot(Number(element.getAttribute('x2')) - Number(element.getAttribute('x1')), Number(element.getAttribute('y2')) - Number(element.getAttribute('y1')));
-      if (length > 0) animate(element, [{ strokeDasharray: `${length} ${length}`, strokeDashoffset: length }, { strokeDasharray: `${length} ${length}`, strokeDashoffset: 0 }], { duration: 1100 });
+      // Filtering must keep every qualifying connection visible on the first frame.
+      animate(element, [{ opacity:.65 }, { opacity:1 }], { duration:350 });
     } else if (element.matches('.graph-node')) {
-      const siblings = [...element.parentNode.querySelectorAll('.graph-node')];
-      const opacity = getComputedStyle(element).opacity;
-      animate(element, [{ opacity: .08 }, { opacity }], { duration: 650, delay: siblings.indexOf(element) * 60 });
+      const opacity = Number(getComputedStyle(element).opacity);
+      animate(element, [{ opacity:opacity*.8 }, { opacity }], { duration:350 });
     } else if (element.matches('.interest-bar-track > span')) {
       animate(element, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 950 });
     } else if (element.matches('.chart-donut')) {

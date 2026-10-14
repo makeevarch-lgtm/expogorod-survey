@@ -63,8 +63,8 @@
 .graph-node{cursor:pointer;transition:opacity .2s}
 .graph-node.is-muted{opacity:.25}
 .graph-node:focus-visible{outline:none}
-.graph-node:focus-visible circle,.graph-node.is-selected circle{stroke:#414cda;stroke-width:3.5px}
-.graph-node:hover circle{stroke-width:3.5px}
+.graph-node:focus-visible .graph-node-disc,.graph-node.is-selected .graph-node-disc{stroke:#414cda;stroke-width:3.5px}
+.graph-node:hover .graph-node-disc{stroke-width:3.5px}
 .graph-edge{transition:stroke-opacity .2s}
 .network-selection{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
 .network-reset{font:inherit;font-size:12px;border:1px solid var(--ink);background:#fff;color:var(--ink);padding:9px 12px;cursor:pointer}
@@ -135,3 +135,18 @@
  .analytics-page .metric-label .icon{width:13px;height:13px;flex:none}
  .analytics-page .metric strong{display:block;font-size:30px;margin-top:7px}
 }
+
+/* Modes describe the reading of the network, not a technical response threshold. */
+.network-heading .network-visible-count{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.network-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;background:#fafafa;border-bottom:1px solid var(--ink)}
+.network-modes{display:flex;flex:none;gap:0;border:1px solid var(--ink)}
+.network-modes button{font:inherit;font-size:12px;line-height:1.2;padding:10px 14px;background:#fff;border:0;color:var(--ink);cursor:pointer;white-space:nowrap}
+.network-modes button+button{border-left:1px solid var(--ink)}
+.network-modes button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.network-modes button:disabled{opacity:.45;cursor:default}
+.network-modes button:focus-visible,.network-show-all:focus-visible{outline:3px solid var(--accent);outline-offset:3px;position:relative;z-index:1}
+.network-toolbar p{font-size:12px;line-height:1.5;color:var(--muted);margin:0;max-width:440px}
+.network-show-all{font:inherit;background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:0;text-align:left}
+.network-mode-method{font-size:12px;line-height:1.6;color:var(--muted);margin:14px 20px}
+@media(max-width:900px){.network-toolbar{align-items:flex-start;flex-direction:column;gap:9px}.network-toolbar p{max-width:none}}
+@media(max-width:640px){.analytics-page .network-heading{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px}.network-heading .network-visible-count{font-size:11px}.network-toolbar{padding:10px}.network-modes{width:100%}.network-modes button{flex:1;font-size:12px;padding:10px 8px}.network-toolbar p{font-size:11px}}

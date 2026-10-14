@@ -14,6 +14,14 @@
   const isTest=data=>data?.datasetType==='synthetic-demo';
   let dataset;
   let selectedInterest = null;
+  let networkMode = 'all';
+  const modeNames = { all:'Все связи', frequent:'Частые', leaders:'Лидеры' };
+  function setNetworkMode(mode) {
+    if (!dataset || !Object.hasOwn(modeNames, mode)) return;
+    networkMode = mode;
+    byId('network-threshold').value = String(window.EXPO_CHARTS.networkThreshold(dataset.network, mode));
+    renderGraph();
+  }
   function validate(data) {
     if (data?.schemaVersion !== 1 || !integer(data.totalResponses) || !Number.isFinite(Date.parse(data.sourceAsOf)) || !Number.isFinite(Date.parse(data.generatedAt))) throw new Error('Invalid snapshot');
     if(isTest(data)&&(!testMode||data.method?.refresh!=='synthetic-demo'||!data.demo?.notice))throw new Error('Invalid test snapshot');
@@ -50,8 +58,14 @@
     const edges = network.edges.filter((edge) => edge.count >= minimum);
     const shown = window.EXPO_CHARTS.focusedEdges(network, minimum, selectedInterest);
     const filterLabel = byId('network-filter-label');
-    if (filterLabel) filterLabel.textContent = `Связи: ${number(shown.length)}`;
-    const neighbors = new Set(selectedInterest ? [selectedInterest, ...shown.flatMap((edge) => [edge.source, edge.target])] : network.nodes.map((item) => item.id));
+    if (filterLabel) filterLabel.textContent = `${number(shown.length)} из ${number(network.edges.length)} связей`;
+    document.querySelectorAll('[data-network-mode]').forEach(button => {
+      button.setAttribute('aria-pressed', button.dataset.networkMode === networkMode);
+      button.disabled = !network.edges.length;
+    });
+    const description = byId('network-mode-description');
+    if (description) description.textContent = networkMode === 'all' ? 'Линия соединяет два интереса, выбранных вместе. Толще линия — чаще сочетание.' : networkMode === 'frequent' ? 'Сочетания, которые выбирают вместе чаще остальных.' : 'Самые частые сочетания интересов.';
+    const neighbors = new Set(selectedInterest ? [selectedInterest, ...shown.flatMap((edge) => [edge.source, edge.target])] : networkMode === 'all' ? network.nodes.map((item) => item.id) : edges.flatMap(edge => [edge.source, edge.target]));
     const canvas = byId('network-svg');
     canvas.replaceChildren(svg('title', {id:'network-svg-title'}, 'Связи между поводами приехать'), svg('desc', {id:'network-svg-desc'}, `Ответов на вопрос: ${network.base}. Связей при выбранном пороге: ${shown.length}. Минимум совместных выборов: ${minimum}. Нажмите круг или название интереса, чтобы выделить его связи. Точные числа указаны в списке.`));
     const defs = svg('defs');
@@ -78,22 +92,24 @@
       network.nodes.forEach((item,i) => {
         const {x,y} = points.get(item.id); const radius = item.count ? 17+16*Math.sqrt(item.count/max) : 13;
         const relevant = neighbors.has(item.id);
-        if (item.count && relevant) canvas.append(svg('circle',{cx:x,cy:y,r:radius+9,fill:palette[item.id],filter:'url(#network-glow)',opacity:selectedInterest===item.id ? .85 : .4,'aria-hidden':'true'}));
-        const group = svg('g',{id:`graph-node-${item.id}`,role:'button',tabindex:0,'aria-label':`${item.label}. Выборов: ${item.count}. Показать связи`,'aria-pressed':selectedInterest===item.id,class:`graph-node${selectedInterest===item.id ? ' is-selected' : ''}${relevant ? '' : ' is-muted'}`});
+
+        const group = svg('g',{id:`graph-node-${item.id}`,role:'button',tabindex:0,transform:`translate(${x} ${y})`,style:`--node-color:${palette[item.id]};--node-delay:${-i*.85}s`,'aria-label':`${item.label}. Выборов: ${item.count}. Показать связи`,'aria-pressed':selectedInterest===item.id,class:`graph-node${selectedInterest===item.id ? ' is-selected' : ''}${relevant ? '' : ' is-muted'}${item.count ? '' : ' is-empty'}`});
         group.addEventListener('click',()=>chooseInterest(item.id));
         group.addEventListener('keydown',(event)=>{if(event.key==='Enter' || event.key===' '){event.preventDefault();chooseInterest(item.id);}if(event.key==='Escape'){selectedInterest=null;renderGraph();byId(`graph-node-${item.id}`)?.focus();}});
-        group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`),svg('circle',{cx:x,cy:y,r:radius,fill:item.count?palette[item.id]:'#f5f5f5','fill-opacity':item.count ? .72 : 1,stroke:'#171717','stroke-width':1.8}),svg('text',{x,y:y+6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
+        group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`));
+        if (item.count) group.append(svg('circle',{class:'graph-node-halo',cx:0,cy:0,r:radius+8,fill:palette[item.id],filter:'url(#network-glow)',opacity:.2,'aria-hidden':'true','pointer-events':'none'}),svg('circle',{class:'graph-node-wave',cx:0,cy:0,r:radius+3,fill:'none',stroke:palette[item.id],'stroke-width':1.2,opacity:0,'aria-hidden':'true','pointer-events':'none'}));
+        group.append(svg('circle',{class:'graph-node-disc',cx:0,cy:0,r:radius,fill:item.count?palette[item.id]:'#f5f5f5','fill-opacity':item.count ? .72 : 1,stroke:'#171717','stroke-width':1.8}),svg('text',{class:'graph-node-label',x:0,y:6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
       });
     }
     byId('network-reset').disabled = !selectedInterest;
     document.querySelectorAll('.network-choice').forEach((button)=>{const active=button.dataset.interest===selectedInterest;button.setAttribute('aria-pressed',active);button.classList.toggle('is-selected',active);});
     const selected = network.nodes.find((item)=>item.id===selectedInterest);
-    byId('network-selected').textContent = selected ? `${selected.label}: ${selected.count} из ${network.base} ответов. Связей при выбранном пороге: ${shown.length}.` : 'Выберите интерес на схеме.';
+    byId('network-selected').textContent = selected ? `${selected.label}: ${selected.count} из ${network.base} ответов. Показано сочетаний: ${shown.length}.` : 'Нажмите на круг или название, чтобы увидеть его сочетания.';
     const connections = byId('network-connections'); connections.replaceChildren();
     if(selected) {
       const labels = new Map(network.nodes.map((item)=>[item.id,item.label]));
       shown.slice().sort((a,b)=>b.count-a.count).forEach((edge)=>{const row=node('li');row.append(node('span',labels.get(edge.source===selected.id?edge.target:edge.source)),node('strong',`${edge.count} из ${network.base} вместе`));connections.append(row);});
-      if(!shown.length) connections.append(node('li','При этом пороге сочетаний нет. Попробуйте уменьшить порог.'));
+      if(!shown.length) { const row=node('li','В этом режиме сочетаний нет. ');const all=node('button','Показать все','network-show-all');all.type='button';all.addEventListener('click',()=>setNetworkMode('all'));row.append(all);connections.append(row); }
     }
     const tableMount = byId('network-table'); tableMount.replaceChildren();
     if (!edges.length) { tableMount.append(node('p',hasSelections ? 'При выбранном пороге совместных выборов пока нет. Отдельные интересы остаются видны на схеме.' : 'Связей для сравнения пока нет.')); window.EXPO_MOTION?.refresh(canvas); return; }
@@ -144,9 +160,10 @@
     exported.append(svg('title',{},testMode?'Экспогород — тестовый набор связей интересов':'Экспогород — связи между интересами'),svg('rect',{width:480,height:820,fill:'#ffffff'}));
     const text=(x,y,value,size=12,weight=400)=>svg('text',{x,y,'font-size':size,'font-weight':weight,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},value);
     const date=new Intl.DateTimeFormat('ru-RU',{dateStyle:'short',timeStyle:'short',timeZone:'Europe/Moscow'}).format(new Date(dataset.sourceAsOf));
-    exported.append(text(20,30,testMode?'ТЕСТ / СВЯЗИ ИНТЕРЕСОВ':'ЭКСПОГОРОД / СВЯЗИ ИНТЕРЕСОВ',19,700),text(20,51,testMode?`Тестовый набор: ${dataset.network.base} ответа`:`Срез: ${date} МСК · ответов: ${dataset.network.base}`),text(20,69,`Минимум совместных выборов: ${byId('network-threshold').value}`));
+    exported.append(text(20,30,testMode?'ТЕСТ / СВЯЗИ ИНТЕРЕСОВ':'ЭКСПОГОРОД / СВЯЗИ ИНТЕРЕСОВ',19,700),text(20,51,testMode?`Тестовый набор: ${dataset.network.base} ответа`:`Срез: ${date} МСК · ответов: ${dataset.network.base}`),text(20,69,`Режим: ${modeNames[networkMode]} · минимум совместных выборов: ${byId('network-threshold').value}`));
     const graph=byId('network-svg').cloneNode(true);graph.setAttribute('x',0);graph.setAttribute('y',83);graph.setAttribute('width',480);graph.setAttribute('height',400);graph.setAttribute('role','img');
     // Export the complete graph at the active threshold, independent of UI focus.
+    graph.querySelectorAll('.graph-node-halo, .graph-node-wave').forEach(item=>item.remove());
     graph.querySelectorAll('.graph-edge').forEach((edge)=>edge.setAttribute('stroke-opacity',.48));
     graph.querySelectorAll('.graph-node').forEach((item)=>{item.removeAttribute('class');item.removeAttribute('tabindex');item.removeAttribute('role');item.removeAttribute('aria-pressed');});
     graph.querySelector('desc').textContent=`Ответов: ${dataset.network.base}. Порог совместного выбора: ${byId('network-threshold').value}. Числа и названия интересов приведены ниже.`;exported.append(graph);
@@ -163,6 +180,7 @@
     const blob=new Blob([new XMLSerializer().serializeToString(exported)],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob);const link=node('a');link.href=url;link.download=testMode?`expogorod-test-${dataset.network.base}-network.svg`:`expogorod-network-${dataset.sourceAsOf.slice(0,10)}.svg`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
   });
+  document.querySelectorAll('[data-network-mode]').forEach(button=>button.addEventListener('click',()=>setNetworkMode(button.dataset.networkMode)));
   byId('network-threshold').addEventListener('change',()=>{if(dataset)renderGraph();});
   byId('network-reset').addEventListener('click',()=>{selectedInterest=null;if(dataset)renderGraph();});
   fetch(testMode?'results-demo.json':'results.json',{cache:'no-store'}).then((response)=>{if(!response.ok)throw new Error('Unavailable snapshot');return response.json();}).then(validate).then(render).catch(()=>{

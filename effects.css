@@ -1,10 +1,16 @@
 /* Motion is an enhancement. Geometry, labels and final values stay readable without it. */
 .interest-bar-track > span { transform-origin:left center; }
 #metric-total, #metric-interest, #metric-pairs { font-variant-numeric:tabular-nums; }
-.graph-node circle { transition:stroke-width .2s,filter .25s; }
-.graph-node:hover circle, .graph-node:focus-visible circle, .graph-node.is-selected circle {
-  filter:drop-shadow(0 0 5px #7e8dff66);
+.graph-node-disc { transition:stroke-width .2s,filter .25s; }
+.graph-node:hover .graph-node-disc, .graph-node:focus-visible .graph-node-disc, .graph-node.is-selected .graph-node-disc {
+  filter:drop-shadow(0 0 5px var(--node-color,#7e8dff));
 }
+.graph-node { --node-glow-peak:.5; --node-wave-peak:.48; }
+.graph-node.is-selected, .graph-node:focus-visible { --node-glow-peak:.78; --node-wave-peak:.72; }
+/* Decorative circles breathe around the local origin; the count-sized disc stays still. */
+.graph-node-halo, .graph-node-wave { transform-origin:0 0; pointer-events:none; }
+.graph-node-halo { opacity:.18; }
+.graph-node-wave { opacity:0; }
 .interest-bar:hover .interest-bar-track > span { filter:brightness(1.06); }
 .hero-orb { --orb-delay:0s; }
 .hero-symbol-lavender { --orb-delay:-2.7s; }
@@ -20,7 +26,24 @@
   .motion-ready .hero-orb-halo { animation:expo-orb-glow 8s ease-in-out var(--orb-delay) infinite; }
   .motion-ready .hero-orb-wave { animation:expo-orb-wave 8s ease-out var(--orb-delay) infinite; }
   .motion-ready .hero-art svg > g[filter] { animation:expo-glow-drift 8s ease-in-out infinite; }
+  .motion-ready .graph-node:not(.is-muted):not(.is-empty) .graph-node-halo {
+    animation:expo-node-glow 7.6s ease-in-out var(--node-delay,0s) infinite;
+  }
+  .motion-ready .graph-node:not(.is-muted):not(.is-empty) .graph-node-wave {
+    animation:expo-node-wave 7.6s ease-out var(--node-delay,0s) infinite;
+  }
   .motion-paused *, .motion-paused *::before, .motion-paused *::after { animation-play-state:paused !important; }
+}
+.graph-node.is-muted .graph-node-halo, .graph-node.is-empty .graph-node-halo { opacity:.06; }
+.graph-node.is-muted .graph-node-wave, .graph-node.is-empty .graph-node-wave { opacity:0; }
+@keyframes expo-node-glow {
+  0%,12%,65%,100% { opacity:.14; transform:scale(.96); }
+  32% { opacity:var(--node-glow-peak); transform:scale(1.12); }
+}
+@keyframes expo-node-wave {
+  0%,17% { opacity:0; transform:scale(1); }
+  27% { opacity:var(--node-wave-peak); transform:scale(1.06); }
+  62%,100% { opacity:0; transform:scale(1.42); }
 }
 /* Local transforms animate each icon around its own centre; parent SVG translations stay intact. */
 @keyframes expo-orb-breathe {

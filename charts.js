@@ -62,6 +62,13 @@
     return { cards, hypothesis };
   }
 
+  function networkThreshold(network, mode) {
+    const counts = network.edges.map(edge => edge.count).sort((a,b) => b-a);
+    if (!counts.length || mode === 'all') return 1;
+    const limit = mode === 'leaders' ? Math.min(3, counts.length) : Math.ceil(counts.length / 2);
+    return counts[limit-1]; // Keep all ties at the boundary.
+  }
+
   function focusedEdges(network, minimum, selected) {
     return network.edges.filter((edge) => edge.count >= minimum && (!selected || edge.source === selected || edge.target === selected));
   }
@@ -222,7 +229,7 @@
   }
 
   // Data is validated by results.js before being passed to this presentation layer.
-  window.EXPO_CHARTS = Object.freeze({ validateMobility, summarize, focusedEdges, render(data) {
+  window.EXPO_CHARTS = Object.freeze({ validateMobility, summarize, networkThreshold, focusedEdges, render(data) {
     renderInsights(data);
     renderMobility(data);
     renderBars(data.network);
