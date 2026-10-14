@@ -6,13 +6,35 @@
   filter:drop-shadow(0 0 5px #7e8dff66);
 }
 .interest-bar:hover .interest-bar-track > span { filter:brightness(1.06); }
+.hero-orb { --orb-delay:0s; }
+.hero-symbol-lavender { --orb-delay:-2.7s; }
+.hero-symbol-lime { --orb-delay:-5.4s; }
+.hero-orb-center { --orb-delay:-1.4s; }
+.hero-orb-face, .hero-orb-halo, .hero-orb-wave { transform-origin:0 0; }
 @media (prefers-reduced-motion:no-preference) {
   .motion-ready .hero-art svg > path[stroke-dasharray] { animation:expo-route-flow 9s linear infinite; }
   .motion-ready .hero-symbol-pink { animation:expo-symbol-float 7s ease-in-out infinite; }
   .motion-ready .hero-symbol-lime { animation:expo-symbol-float 8s ease-in-out -3s infinite; }
   .motion-ready .hero-symbol-lavender { animation:expo-symbol-float 9s ease-in-out -5s infinite; }
+  .motion-ready .hero-orb-face { animation:expo-orb-breathe 8s ease-in-out var(--orb-delay) infinite; }
+  .motion-ready .hero-orb-halo { animation:expo-orb-glow 8s ease-in-out var(--orb-delay) infinite; }
+  .motion-ready .hero-orb-wave { animation:expo-orb-wave 8s ease-out var(--orb-delay) infinite; }
   .motion-ready .hero-art svg > g[filter] { animation:expo-glow-drift 8s ease-in-out infinite; }
   .motion-paused *, .motion-paused *::before, .motion-paused *::after { animation-play-state:paused !important; }
+}
+/* Local transforms animate each icon around its own centre; parent SVG translations stay intact. */
+@keyframes expo-orb-breathe {
+  0%,18%,70%,100% { transform:scale(1); }
+  40% { transform:scale(1.065); }
+}
+@keyframes expo-orb-glow {
+  0%,18%,70%,100% { opacity:.1; transform:scale(.92); }
+  40% { opacity:.72; transform:scale(1.18); }
+}
+@keyframes expo-orb-wave {
+  0%,18% { opacity:0; transform:scale(1); }
+  28% { opacity:.42; transform:scale(1.06); }
+  62%,100% { opacity:0; transform:scale(1.55); }
 }
 @keyframes expo-route-flow { to { stroke-dashoffset:-90; } }
 @keyframes expo-symbol-float { 0%,100% { translate:0 0; } 50% { translate:0 -4px; } }

@@ -8,10 +8,10 @@
   <title>Аналитика — Экспогород</title>
   <link rel="icon" href="assets/mark.svg?v=4.0" type="image/svg+xml">
   <link rel="stylesheet" href="style.css?v=4.0">
-  <link rel="stylesheet" href="charts.css?v=4.2"><link rel="stylesheet" href="effects.css?v=4.0">
-  <script src="charts.js?v=4.0" defer></script>
-  <script src="test-mode.js?v=4.0" defer></script><script src="motion.js?v=4.2" defer></script>
-  <script src="results.js?v=4.2" defer></script>
+  <link rel="stylesheet" href="charts.css?v=4.2"><link rel="stylesheet" href="effects.css?v=4.3">
+  <script src="charts.js?v=4.3" defer></script>
+  <script src="test-mode.js?v=4.0" defer></script><script src="motion.js?v=4.3" defer></script>
+  <script src="results.js?v=4.3" defer></script>
 </head>
 <body class="analytics-page">
   <a class="skip" href="#main">Перейти к содержанию</a>
@@ -32,7 +32,7 @@
         <article class="metric"><span class="metric-label"><svg class="icon" aria-hidden="true"><use href="assets/icons.svg#network"/></svg> Сочетаний интересов</span><strong id="metric-pairs">—</strong><p>Пар вариантов, выбранных вместе.</p></article>
       </div>
       <div id="interest-network" class="network-panel">
-        <div class="network-heading"><h3><span class="badge">01</span> Связи между интересами</h3><label class="edge-filter">Показывать связи <select id="network-threshold" disabled><option value="1">от 1 ответа</option><option value="2">от 2 ответов</option><option value="3">от 3 ответов</option><option value="5">от 5 ответов</option><option value="10">от 10</option><option value="20">от 20</option><option value="30">от 30</option></select></label></div>
+        <div class="network-heading"><h3><span class="badge">01</span> Связи между интересами</h3><label class="edge-filter"><span id="network-filter-label">Показывать связи</span> <select id="network-threshold" aria-label="Минимальное число совместных ответов" disabled><option value="1">от 1 ответа</option><option value="2">от 2 ответов</option><option value="3">от 3 ответов</option><option value="5">от 5 ответов</option><option value="10">от 10</option><option value="20">от 20</option><option value="30">от 30</option></select></label></div>
         <div class="network-layout"><div class="network-canvas"><svg id="network-svg" viewBox="0 0 480 400" role="group" aria-labelledby="network-svg-title network-svg-desc"><title id="network-svg-title">Связи между поводами приехать</title><desc id="network-svg-desc">Данные загружаются.</desc></svg><div id="network-empty" class="network-empty"><span class="empty-symbol" aria-hidden="true">＋</span><strong>Схема появится вместе с ответами</strong><p>Каждый интерес станет узлом.<br>Совместный выбор — связью.</p></div></div><div class="network-key"><h4>Поводы приехать</h4><p id="network-base" class="network-base">Ожидаем данные</p><ol id="network-nodes" class="network-nodes"></ol><div class="network-selection"><button id="network-reset" class="network-reset" type="button" disabled>Все связи ↺</button><p id="network-selected" role="status" aria-live="polite"></p><ul id="network-connections" class="network-connections"></ul></div></div></div>
         <div class="network-caption"><span><i class="swatch science"></i> Познание</span><span><i class="swatch events"></i> События</span><span><i class="swatch nature"></i> Активный отдых</span><span class="caption-note">Граф интересов · не карта маршрутов</span></div>
       </div>

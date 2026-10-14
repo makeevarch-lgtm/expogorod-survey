@@ -129,10 +129,10 @@
     if (total) segments.forEach((segment) => {
       if (!segment.count) return;
       const length = circumference * segment.count / total;
-      // A complete circumference is valid even for the 100% / one-segment case.
+      // A full-circumference gap prevents a second dash wrapping over the seam.
       graphic.append(svg('circle', {
         cx: 130, cy: 130, r: 94, fill: 'none', stroke: segment.color, 'stroke-width': 31, 'stroke-opacity': .76,
-        'stroke-dasharray': `${length} ${Math.max(0, circumference - length)}`,
+        'stroke-dasharray': `${length} ${circumference}`,
         'stroke-dashoffset': -offset, transform: 'rotate(-90 130 130)'
       }));
       offset += length;

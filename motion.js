@@ -30,7 +30,7 @@
     counterValues.set(element, original);
     const value = Number(original.replace(/[\s\u00a0\u202f%]/g, '').replace(',', '.'));
     const suffix = original.endsWith('%') ? (original.match(/[\s\u00a0\u202f]*%$/)?.[0] || '%') : '';
-    const digits = original.includes(',') ? original.split(',')[1].replace('%','').length : 0;
+    const digits = original.includes(',') ? original.split(',')[1].replace(/[\s\u00a0\u202f%]/g,'').length : 0;
     const formatter = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: digits, maximumFractionDigits: digits });
     const label = element.getAttribute('aria-label');
     element.setAttribute('aria-label', label || original);
@@ -54,11 +54,11 @@
     frame = requestAnimationFrame(tick);
   };
   const play = element => {
-    if (!enabled() || seen.has(element)) return;
+    if (!enabled() || !element.isConnected || seen.has(element)) return;
     if (element.matches('#metric-total, #metric-interest, #metric-pairs, [data-count]') && !/^\d[\d\s\u00a0\u202f]*(?:,\d+)?%?$/.test(element.textContent.trim())) return;
     seen.add(element);
     if (element.matches('.graph-edge')) {
-      const length = element.getTotalLength?.() || Math.hypot(Number(element.getAttribute('x2')) - Number(element.getAttribute('x1')), Number(element.getAttribute('y2')) - Number(element.getAttribute('y1')));
+      const length = Math.hypot(Number(element.getAttribute('x2')) - Number(element.getAttribute('x1')), Number(element.getAttribute('y2')) - Number(element.getAttribute('y1')));
       if (length > 0) animate(element, [{ strokeDasharray: `${length} ${length}`, strokeDashoffset: length }, { strokeDasharray: `${length} ${length}`, strokeDashoffset: 0 }], { duration: 1100 });
     } else if (element.matches('.graph-node')) {
       const siblings = [...element.parentNode.querySelectorAll('.graph-node')];
@@ -66,18 +66,16 @@
       animate(element, [{ opacity: .08 }, { opacity }], { duration: 650, delay: siblings.indexOf(element) * 60 });
     } else if (element.matches('.interest-bar-track > span')) {
       animate(element, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 950 });
-    } else if (element.matches('.chart-donut circle[stroke-dasharray]')) {
-      // Animate each actual segment to its stored length, preserving its start angle.
-      const values = element.getAttribute('stroke-dasharray').split(/\s+/).map(Number);
-      const circumference = values.reduce((sum, value) => sum + value, 0);
-      animate(element, [{ strokeDasharray: `0 ${circumference}` }, { strokeDasharray: `${values[0]} ${values[1]}` }], { duration: 1100 });
+    } else if (element.matches('.chart-donut')) {
+      // Reveal the complete chart without deforming individual arc segments.
+      animate(element, [{ opacity: .15 }, { opacity: 1 }], { duration: 900 });
     } else if (element.matches('#metric-total, #metric-interest, #metric-pairs, [data-count]')) {
       count(element);
     } else {
       animate(element, [{ opacity: .65, transform: 'translateY(12px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 600 });
     }
   };
-  const selector = '[data-reveal], .graph-edge, .graph-node, .interest-bar-track > span, .chart-donut circle[stroke-dasharray], #metric-total, #metric-interest, #metric-pairs, [data-count]';
+  const selector = '[data-reveal], .graph-edge, .graph-node, .interest-bar-track > span, .chart-donut, #metric-total, #metric-interest, #metric-pairs, [data-count]';
   const refresh = (root = document) => {
     if (!enabled()) return;
     document.documentElement.classList.add('motion-ready');

@@ -49,6 +49,8 @@
     const minimum = Number(byId('network-threshold').value);
     const edges = network.edges.filter((edge) => edge.count >= minimum);
     const shown = window.EXPO_CHARTS.focusedEdges(network, minimum, selectedInterest);
+    const filterLabel = byId('network-filter-label');
+    if (filterLabel) filterLabel.textContent = `Связи: ${number(shown.length)}`;
     const neighbors = new Set(selectedInterest ? [selectedInterest, ...shown.flatMap((edge) => [edge.source, edge.target])] : network.nodes.map((item) => item.id));
     const canvas = byId('network-svg');
     canvas.replaceChildren(svg('title', {id:'network-svg-title'}, 'Связи между поводами приехать'), svg('desc', {id:'network-svg-desc'}, `Ответов на вопрос: ${network.base}. Связей при выбранном пороге: ${shown.length}. Минимум совместных выборов: ${minimum}. Нажмите круг или название интереса, чтобы выделить его связи. Точные числа указаны в списке.`));
@@ -104,7 +106,7 @@
   }
   function render(data) {
     dataset=data;
-    if(testMode){byId('network-threshold').value='10';if(byId('metric-total-label'))byId('metric-total-label').textContent='Тестовых ответов';}
+    if(testMode){byId('network-threshold').value='1';if(byId('metric-total-label'))byId('metric-total-label').textContent='Тестовых ответов';}
     byId('metric-total').textContent=number(data.totalResponses);
     byId('metric-interest').textContent=data.interested.percent===null?'—':data.interested.base<10?`${number(data.interested.count)} из ${number(data.interested.base)}`:`${number(data.interested.percent)} %`;
     byId('metric-interest-note').textContent=data.interested.base?`«Определённо» или «скорее посетил(а) бы»: ${number(data.interested.percent)}% (${number(data.interested.count)} из ${number(data.interested.base)}).${data.interested.base<10 ? ' Пока слишком мало анкет для общих выводов.' : ''}`:'Пока нет ответов на вопрос о желании приехать.';
