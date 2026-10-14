@@ -1,0 +1,22 @@
+/* Motion is an enhancement. Geometry, labels and final values stay readable without it. */
+.interest-bar-track > span { transform-origin:left center; }
+#metric-total, #metric-interest, #metric-pairs { font-variant-numeric:tabular-nums; }
+.graph-node circle { transition:stroke-width .2s,filter .25s; }
+.graph-node:hover circle, .graph-node:focus-visible circle, .graph-node.is-selected circle {
+  filter:drop-shadow(0 0 5px #7e8dff66);
+}
+.interest-bar:hover .interest-bar-track > span { filter:brightness(1.06); }
+@media (prefers-reduced-motion:no-preference) {
+  .motion-ready .hero-art svg > path[stroke-dasharray] { animation:expo-route-flow 9s linear infinite; }
+  .motion-ready .hero-symbol-pink { animation:expo-symbol-float 7s ease-in-out infinite; }
+  .motion-ready .hero-symbol-lime { animation:expo-symbol-float 8s ease-in-out -3s infinite; }
+  .motion-ready .hero-symbol-lavender { animation:expo-symbol-float 9s ease-in-out -5s infinite; }
+  .motion-ready .hero-art svg > g[filter] { animation:expo-glow-drift 8s ease-in-out infinite; }
+  .motion-paused *, .motion-paused *::before, .motion-paused *::after { animation-play-state:paused !important; }
+}
+@keyframes expo-route-flow { to { stroke-dashoffset:-90; } }
+@keyframes expo-symbol-float { 0%,100% { translate:0 0; } 50% { translate:0 -4px; } }
+@keyframes expo-glow-drift { 0%,100% { opacity:.5; } 50% { opacity:.78; } }
+@media (prefers-reduced-motion:reduce) {
+  .hero-art *, .graph-node circle { animation:none !important; transition:none !important; }
+}

@@ -7,11 +7,11 @@
   <meta name="theme-color" content="#414cda">
   <title>Экспогород — городской интерес</title>
   <link rel="icon" href="assets/mark.svg?v=3.0" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=3.0">
-  <script src="config.js?v=3.0" defer></script>
-  <script src="app.js?v=3.0" defer></script>
-  <script src="motion.js?v=3.0" defer></script>
-</head>
+  <link rel="stylesheet" href="style.css?v=4.0">
+  <script src="config.js?v=4.0" defer></script>
+  <script src="app.js?v=4.0" defer></script>
+  <script src="test-mode.js?v=4.0" defer></script><script src="motion.js?v=4.0" defer></script>
+<link rel="stylesheet" href="effects.css?v=4.0"></head>
 <body class="home-page">
   <a class="skip" href="#main">Перейти к содержанию</a>
   <header class="header wrap">
@@ -22,12 +22,12 @@
     <section class="hero wrap" aria-labelledby="title">
       <div class="hero-copy">
         <p class="eyebrow"><span class="badge">Опрос</span> Дипломное исследование · Щербинка</p>
-        <p class="hero-context">Экспогород — архитектурный проект о будущем территории экспериментального железнодорожного кольца. Начинаем с вашего опыта.</p>
+        <p class="hero-context">Экспогород — дипломный проект о будущем экспериментального кольца в Щербинке.</p>
         <h1 id="title">Какие места<br>хочется<br><em>посещать?</em></h1>
-        <p class="lead">Что вам интересно в городе и ради чего вы готовы приехать в новое место? Ответы помогут уточнить программу дипломного проекта.</p>
+        <p class="lead">Помогите выбрать, что появится здесь: наука, выставки или отдых?</p>
         <div class="hero-action"><button id="start" class="primary" type="button">Пройти опрос <span aria-hidden="true">↘</span></button><span class="duration">3–5 минут<br><small>участие от 18 лет</small></span></div>
-        <p id="availability" class="availability" role="status">Ответы сохраняются в Яндекс Формах. Регистрация для участия не требуется.</p>
-        <a class="project-intro-link" href="territory.html">Сначала посмотреть территорию <span aria-hidden="true">↗</span></a>
+        <a class="project-intro-link" href="territory.html">Посмотреть территорию <span aria-hidden="true">↗</span></a>
+        <details class="hero-meta"><summary>Об участии</summary><p id="availability" class="availability" role="status">Ответы сохраняются в Яндекс Формах. Регистрация для участия не требуется.</p></details>
       </div>
       <div class="art hero-art" aria-hidden="true">
         <div class="diagram-title"><span class="badge">01</span> У каждого — свой городской интерес</div>
@@ -83,7 +83,7 @@
       <div id="form-mount"></div>
     </section>
     <section class="explore wrap" aria-labelledby="explore-title" data-reveal>
-      <div class="explore-intro"><p class="eyebrow"><span class="badge">01</span> Изучить исследование</p><h2 id="explore-title">От ответов<br> к территории.</h2><p>Посмотрите, что выбирают участники и в каком городском окружении находится кольцо.</p></div>
+      <div class="explore-intro"><p class="eyebrow"><span class="badge">01</span> Изучить исследование</p><h2 id="explore-title">От ответов<br> к территории.</h2><p>Интересы участников и место будущего проекта.</p></div>
       <a class="explore-link" href="analytics.html"><span class="explore-number">01 / Ответы</span><h3>Что интересно<br>людям</h3><p>Выводы опроса, сочетания интересов и условия поездки.</p><span class="explore-arrow" aria-hidden="true">↗</span></a>
       <a class="explore-link" href="territory.html"><span class="explore-number">02 / Карта</span><h3>Как устроена<br>территория</h3><p>Площадки Москвы, экспериментальное кольцо и его окружение.</p><span class="explore-arrow" aria-hidden="true">↗</span></a>
     </section>
@@ -102,10 +102,10 @@
     </section>
     <section class="author wrap" aria-labelledby="author-title" data-reveal>
       <img src="assets/author.png" width="640" height="640" alt="Елисей Макеев" loading="lazy" decoding="async">
-      <div><p class="eyebrow">Автор проекта</p><h2 id="author-title">Елисей Макеев</h2><p>Работаю над Экспогородом в рамках архитектурного диплома. В канале делюсь процессом, схемами и тем, как складывается проект.</p><a class="author-telegram" href="https://t.me/makeev_architect" target="_blank" rel="noopener noreferrer">@makeev_architect <span aria-hidden="true">↗</span></a></div>
+      <div><p class="eyebrow">Автор проекта</p><h2 id="author-title">Елисей Макеев</h2><p>Экспогород — мой архитектурный диплом. В канале — процесс, схемы и развитие проекта.</p><a class="author-telegram" href="https://t.me/makeev_architect" target="_blank" rel="noopener noreferrer">@makeev_architect <span aria-hidden="true">↗</span></a></div>
     </section>
   </main>
-  <footer class="footer wrap"><span>ЭКСПОГОРОД</span><span>Учебное исследование · 2026</span><a href="#main">Наверх ↑</a></footer>
+  <footer class="footer wrap"><span>ЭКСПОГОРОД</span><span>Учебное исследование · 2026</span><a href="#main">Наверх ↑</a></footer><p class="site-usage-note wrap">Авторский некоммерческий проект. Публикация, передача и использование материалов — по согласованию с автором: <a href="https://t.me/makeev_architect" target="_blank" rel="noopener noreferrer">@makeev_architect</a>.</p>
   <noscript><p class="wrap">Без JavaScript можно <a href="https://forms.yandex.ru/u/6aca68b9060b53c6863d3e48" target="_blank" rel="noopener noreferrer">открыть анкету отдельно в Яндекс Формах</a>.</p></noscript>
 </body>
 </html>

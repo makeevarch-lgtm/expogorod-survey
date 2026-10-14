@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "datasetType": "synthetic-demo",
+  "generatedAt": "2026-10-14T00:00:00+03:00",
+  "sourceAsOf": "2026-10-14T00:00:00+03:00",
+  "totalResponses": 143,
+  "demo": {
+    "label": "Модельный сценарий на 143 наблюдений",
+    "notice": "Искусственные данные для демонстрации графики. Не ответы респондентов и не прогноз спроса.",
+    "generator": "scripts/build_demo_results.py",
+    "version": 2,
+    "assumptions": "Девять заранее заданных сочетаний интересов; транспорт и готовность приехать заданы отдельно. Не экстраполяция реального опроса."
+  },
+  "interested": {
+    "count": 123,
+    "base": 143,
+    "percent": 86.01398601398601
+  },
+  "network": {
+    "base": 143,
+    "nodes": [
+      {
+        "id": "technique",
+        "label": "Демонстрация техники в действии",
+        "count": 21
+      },
+      {
+        "id": "science",
+        "label": "Интерактивная научная выставка",
+        "count": 62
+      },
+      {
+        "id": "events",
+        "label": "Крупная выставка или фестиваль",
+        "count": 79
+      },
+      {
+        "id": "workshops",
+        "label": "Лекции и мастер-классы",
+        "count": 65
+      },
+      {
+        "id": "sport",
+        "label": "Спортивные занятия или соревнования",
+        "count": 11
+      },
+      {
+        "id": "park",
+        "label": "Прогулка в лесопарке",
+        "count": 72
+      },
+      {
+        "id": "study",
+        "label": "Учёба, исследование или профессиональная встреча",
+        "count": 46
+      }
+    ],
+    "edges": [
+      {
+        "source": "events",
+        "target": "park",
+        "count": 44,
+        "jaccard": 0.4112
+      },
+      {
+        "source": "events",
+        "target": "science",
+        "count": 41,
+        "jaccard": 0.41
+      },
+      {
+        "source": "events",
+        "target": "workshops",
+        "count": 57,
+        "jaccard": 0.6552
+      },
+      {
+        "source": "park",
+        "target": "science",
+        "count": 14,
+        "jaccard": 0.1167
+      },
+      {
+        "source": "park",
+        "target": "sport",
+        "count": 11,
+        "jaccard": 0.1528
+      },
+      {
+        "source": "park",
+        "target": "study",
+        "count": 17,
+        "jaccard": 0.1683
+      },
+      {
+        "source": "park",
+        "target": "workshops",
+        "count": 30,
+        "jaccard": 0.2804
+      },
+      {
+        "source": "science",
+        "target": "study",
+        "count": 21,
+        "jaccard": 0.2414
+      },
+      {
+        "source": "science",
+        "target": "technique",
+        "count": 21,
+        "jaccard": 0.3387
+      },
+      {
+        "source": "science",
+        "target": "workshops",
+        "count": 27,
+        "jaccard": 0.27
+      },
+      {
+        "source": "study",
+        "target": "technique",
+        "count": 21,
+        "jaccard": 0.4565
+      },
+      {
+        "source": "study",
+        "target": "workshops",
+        "count": 8,
+        "jaccard": 0.0777
+      }
+    ]
+  },
+  "quality": {
+    "networkMissing": 0,
+    "networkInvalid": 0,
+    "interestedMissing": 0,
+    "interestedInvalid": 0,
+    "beforeSelectionChange": 0,
+    "excludedTests": 0
+  },
+  "method": {
+    "question": "Модель сочетаний функций",
+    "refresh": "synthetic-demo",
+    "edge": "Сумма модельных сценариев с обоими интересами.",
+    "normalization": "Jaccard по модельным сценариям."
+  },
+  "mobility": {
+    "travelTime": {
+      "title": "Дорога в одну сторону",
+      "base": 143,
+      "missing": 0,
+      "invalid": 0,
+      "options": [
+        {
+          "id": "under30",
+          "label": "До 30 минут",
+          "count": 27
+        },
+        {
+          "id": "minutes31to45",
+          "label": "31–45 минут",
+          "count": 40
+        },
+        {
+          "id": "minutes46to60",
+          "label": "46–60 минут",
+          "count": 48
+        },
+        {
+          "id": "minutes61to90",
+          "label": "61–90 минут",
+          "count": 17
+        },
+        {
+          "id": "over90",
+          "label": "Больше 90 минут",
+          "count": 5
+        },
+        {
+          "id": "noTrip",
+          "label": "Специально не поеду",
+          "count": 2
+        },
+        {
+          "id": "unsure",
+          "label": "Трудно сказать",
+          "count": 4
+        }
+      ]
+    },
+    "transport": {
+      "title": "Предпочитаемый транспорт",
+      "base": 143,
+      "missing": 0,
+      "invalid": 0,
+      "options": [
+        {
+          "id": "public",
+          "label": "Общественный транспорт",
+          "count": 100
+        },
+        {
+          "id": "car",
+          "label": "Личный автомобиль",
+          "count": 24
+        },
+        {
+          "id": "taxi",
+          "label": "Такси",
+          "count": 9
+        },
+        {
+          "id": "bicycleOther",
+          "label": "Велосипед или другой вариант",
+          "count": 6
+        },
+        {
+          "id": "unsure",
+          "label": "Трудно сказать",
+          "count": 4
+        }
+      ]
+    },
+    "walkTime": {
+      "title": "Пешком от станции",
+      "base": 143,
+      "missing": 0,
+      "invalid": 0,
+      "options": [
+        {
+          "id": "under5",
+          "label": "До 5 минут",
+          "count": 8
+        },
+        {
+          "id": "minutes6to10",
+          "label": "6–10 минут",
+          "count": 33
+        },
+        {
+          "id": "minutes11to15",
+          "label": "11–15 минут",
+          "count": 61
+        },
+        {
+          "id": "minutes16to20",
+          "label": "16–20 минут",
+          "count": 26
+        },
+        {
+          "id": "over20",
+          "label": "Более 20 минут",
+          "count": 5
+        },
+        {
+          "id": "noStation",
+          "label": "Станцией пользоваться не планирую",
+          "count": 6
+        },
+        {
+          "id": "unsure",
+          "label": "Трудно сказать",
+          "count": 4
+        }
+      ]
+    }
+  }
+}

@@ -23,7 +23,7 @@
     if (element) element.replaceChildren();
     return element;
   };
-  const note = (text) => html('p', text, 'chart-note');
+  const note = (text) => {const details=html('details',undefined,'chart-note');details.append(html('summary','Основание'),html('p',text));return details;};
 
   // Optional extension: old anonymous snapshots remain usable without mobility.
   function validateMobility(mobility, total) {
