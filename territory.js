@@ -5,7 +5,7 @@
   const colors = {science:'#bcc6fb',exhibition:'#fe96c1',education:'#c6d875'};
   const el = (tag,text,className) => {const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;};
   const fmt = n => new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1}).format(n);
-  let map, catalog, geography, buildings, railContext, center, markers=[], contextMarkers=[], filter='all', selected=null, ready=false, tilted=false, tourStep=0;
+  let map, catalog, geography, buildings, railContext, center, markers=[], contextMarkers=[], filter='all', selected=null, ready=false, tilted=true, tourStep=0;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const tour = [
     {title:'Городской контекст', camera:'Обзор Москвы', description:'Научные, выставочные и образовательные функции уже существуют в городе. Выберите метку, чтобы посмотреть, как они сочетаются на одной площадке.', next:'К кольцу →'},
@@ -37,13 +37,13 @@
     tourStep=Math.max(0,Math.min(2,index));tourCopy();
     markers.forEach(m=>{if(m.id==='station')m.button.hidden=tourStep!==2;if(m.id==='ring')m.button.hidden=tourStep===2;});
     if(!ready)return;
-    detail(null);tilted=tourStep!==0;$('gis-3d').setAttribute('aria-pressed',String(tilted));
+    detail(null);tilted=true;$('gis-3d').setAttribute('aria-pressed',String(tilted));
     const padding=Math.max(30,Math.min(70,$('gis-map').clientWidth*.1));
     const cityPadding=Math.max(42,Math.min(100,$('gis-map').clientWidth*.14));
     const duration=reduced?0:1050;
     if(tourStep===0){
       const bounds=[center,...catalog.items.map(i=>i.coordinates)].reduce((b,p)=>b.extend(p),new maplibregl.LngLatBounds());
-      map.fitBounds(bounds,{padding:cityPadding,pitch:0,bearing:0,duration,maxZoom:11});
+      map.fitBounds(bounds,{padding:cityPadding,pitch:55,bearing:-18,duration,maxZoom:11});
     }else{
       const b=tourStep===2?railContext.metadata.focus_bbox:geography.metadata.ring_bbox;
       const bounds=new maplibregl.LngLatBounds([b[0],b[1]],[b[2],b[3]]);
@@ -199,7 +199,7 @@
   }
   function startMap(){
     if(!window.maplibregl){ $('gis-map-status').textContent='3D-карта недоступна в этом браузере. Подборка, функции и расстояния остаются доступны в таблице ниже.';return;}
-    try{map=new maplibregl.Map({container:'gis-map',style:'https://tiles.openfreemap.org/styles/positron',center,zoom:10,pitch:0,bearing:0,maxZoom:18,minZoom:7,maxBounds:[[36.5,55.1],[38.7,56.2]],attributionControl:true,cooperativeGestures:true,canvasContextAttributes:{antialias:true}});}catch(e){$('gis-map-status').textContent='Не удалось запустить карту. Посмотрите сравнение площадок в таблице ниже.';return;}
+    try{map=new maplibregl.Map({container:'gis-map',style:'https://tiles.openfreemap.org/styles/positron',center,zoom:10,pitch:55,bearing:-18,maxZoom:18,minZoom:7,maxBounds:[[36.5,55.1],[38.7,56.2]],attributionControl:true,cooperativeGestures:true,canvasContextAttributes:{antialias:true}});}catch(e){$('gis-map-status').textContent='Не удалось запустить карту. Посмотрите сравнение площадок в таблице ниже.';return;}
     map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'top-right');map.addControl(new maplibregl.ScaleControl({unit:'metric'}),'bottom-left');
     map.on('error',()=>{if(!ready){$('gis-map-status').hidden=false;$('gis-map-status').textContent='Базовая карта загружается с задержкой. Таблица площадок доступна ниже.';}});
     map.on('load',()=>{
