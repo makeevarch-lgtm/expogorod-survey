@@ -4,7 +4,7 @@
   const status = byId('results-status');
   if (!status) return;
   const svgNS = 'http://www.w3.org/2000/svg';
-  const palette = { technique:'#bcc6fb', science:'#bcc6fb', events:'#fe96c1', workshops:'#fe96c1', sport:'#c6d875', park:'#c6d875', study:'#bcc6fb' };
+  const palette = Object.fromEntries(['technique','science','events','workshops','sport','park','study'].map((id, i) => [id, window.EXPO_CHARTS.colors[i]]));
   const integer = (n) => Number.isInteger(n) && n >= 0;
   const formsWord = (n) => n%10===1 && n%100!==11 ? 'анкета' : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 'анкеты' : 'анкет';
   const number = (n) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits:1 }).format(n);
@@ -81,13 +81,26 @@
     const points = new Map(network.nodes.map((item,i) => { const angle = -Math.PI/2 + i * 2*Math.PI/network.nodes.length; return [item.id,{x:240+156*Math.cos(angle),y:200+133*Math.sin(angle)}]; }));
     if (hasSelections) {
       const maxEdge = Math.max(1,...edges.map((edge) => edge.count));
+      const leadingPairs = edges.slice().sort((a,b) => b.count-a.count || b.jaccard-a.jaccard).slice(0,3);
+      const leadingKeys = new Set(leadingPairs.map(edge => [edge.source,edge.target].sort().join('|')));
       for (const edge of edges) {
         const a = points.get(edge.source); const b = points.get(edge.target);
         const relevant = !selectedInterest || edge.source === selectedInterest || edge.target === selectedInterest;
-        const line = svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#414cda','stroke-opacity':selectedInterest ? relevant ? .82 : .09 : .48,'stroke-width':1.5+5*edge.count/maxEdge, class:`graph-edge${relevant ? ' is-relevant' : ''}`});
+        const emphasized = leadingKeys.has([edge.source,edge.target].sort().join('|'));
+        const line = svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#6572ce','data-base-opacity':emphasized ? .75 : .31,'stroke-opacity':selectedInterest ? relevant ? .82 : .07 : emphasized ? .75 : .31,'stroke-width':1.5+5*edge.count/maxEdge, class:`graph-edge${relevant ? ' is-relevant' : ''}`});
         const labels = network.nodes.filter((item) => [edge.source,edge.target].includes(item.id)).map((item) => item.label);
         line.append(svg('title',{},`${labels.join(' + ')}. Совместных выборов: ${edge.count}; Жаккар ${number(edge.jaccard*100)}%.`)); canvas.append(line);
       }
+      // Only three counts sit on the drawing; the complete values remain in the list.
+      leadingPairs.forEach((edge, index) => {
+        const a = points.get(edge.source); const b = points.get(edge.target);
+        const x = (a.x+b.x)/2; const y = (a.y+b.y)/2;
+        const relevant = !selectedInterest || edge.source===selectedInterest || edge.target===selectedInterest;
+        const label = svg('g',{class:'pair-value',opacity:relevant?1:0,'pointer-events':'none','aria-hidden':'true'});
+        if (!index) label.append(svg('rect',{x:x-34,y:y-9,width:68,height:18,rx:3,fill:'#fff','fill-opacity':.96,stroke:'#babdcf','stroke-width':.7}));
+        label.append(svg('text',{x,y:y+3.5,'font-size':12,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif','font-weight':700,'text-anchor':'middle',fill:'#4d526b',...index?{stroke:'#fff','stroke-width':5,'paint-order':'stroke','stroke-linejoin':'round'}:{}},index?number(edge.count):`${number(edge.count)} вместе`));
+        canvas.append(label);
+      });
       const max = Math.max(1,...network.nodes.map((item) => item.count));
       network.nodes.forEach((item,i) => {
         const {x,y} = points.get(item.id); const radius = item.count ? 17+16*Math.sqrt(item.count/max) : 13;
@@ -97,8 +110,12 @@
         group.addEventListener('click',()=>chooseInterest(item.id));
         group.addEventListener('keydown',(event)=>{if(event.key==='Enter' || event.key===' '){event.preventDefault();chooseInterest(item.id);}if(event.key==='Escape'){selectedInterest=null;renderGraph();byId(`graph-node-${item.id}`)?.focus();}});
         group.append(svg('title',{},`${i+1}. ${item.label}. Выборов: ${item.count}.`));
-        if (item.count) group.append(svg('circle',{class:'graph-node-halo',cx:0,cy:0,r:radius+8,fill:palette[item.id],filter:'url(#network-glow)',opacity:.2,'aria-hidden':'true','pointer-events':'none'}),svg('circle',{class:'graph-node-wave',cx:0,cy:0,r:radius+3,fill:'none',stroke:palette[item.id],'stroke-width':1.2,opacity:0,'aria-hidden':'true','pointer-events':'none'}));
-        group.append(svg('circle',{class:'graph-node-disc',cx:0,cy:0,r:radius,fill:item.count?palette[item.id]:'#f5f5f5','fill-opacity':item.count ? .72 : 1,stroke:'#171717','stroke-width':1.8}),svg('text',{class:'graph-node-label',x:0,y:6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
+        if (item.count) group.append(svg('circle',{class:'graph-node-halo',cx:0,cy:0,r:radius+8,fill:palette[item.id],filter:'url(#network-glow)',opacity:.38,'aria-hidden':'true','pointer-events':'none'}),svg('circle',{class:'graph-node-wave',cx:0,cy:0,r:radius+3,fill:'none',stroke:palette[item.id],'stroke-width':1.2,opacity:0,'aria-hidden':'true','pointer-events':'none'}));
+        if (item.count && network.base) {
+          const arcRadius=radius+3.6; const circumference=2*Math.PI*arcRadius;
+          group.append(svg('circle',{class:'node-share-track',cx:0,cy:0,r:arcRadius,fill:'none',stroke:palette[item.id],'stroke-opacity':.25,'stroke-width':.7,'aria-hidden':'true'}),svg('circle',{class:'node-share-arc',cx:0,cy:0,r:arcRadius,fill:'none',stroke:palette[item.id],'stroke-width':1.8,'stroke-dasharray':`${circumference*item.count/network.base} ${circumference}`,transform:'rotate(-90)','stroke-linecap':'round','aria-label':`${item.count} из ${network.base}`}));
+        }
+        group.append(svg('circle',{class:'graph-node-disc',cx:0,cy:0,r:radius,fill:item.count?palette[item.id]:'#f5f5f5','fill-opacity':1,stroke:'#171717','stroke-width':1.8}),svg('text',{class:'graph-node-label',x:0,y:6,'text-anchor':'middle','font-size':item.count?19:14,'font-family':'Helvetica Neue, Helvetica, Arial, sans-serif',fill:'#171717'},String(i+1).padStart(2,'0'))); canvas.append(group);
       });
     }
     byId('network-reset').disabled = !selectedInterest;
@@ -131,7 +148,9 @@
     status.textContent=testMode?`Тестовый набор · ${number(data.totalResponses)} ответа`:`${data.totalResponses ? `${number(data.totalResponses)} ${formsWord(data.totalResponses)}` : 'Сбор начинается'} · обновлено ${date} МСК.`;
     byId('network-base').textContent=`Основание: ${number(data.network.base)} ответов`;
     const list=byId('network-nodes');list.replaceChildren();
-    data.network.nodes.forEach((item,i)=>{const row=node('li');const button=node('button',undefined,'network-choice');button.type='button';button.dataset.interest=item.id;button.setAttribute('aria-pressed','false');button.addEventListener('click',()=>chooseInterest(item.id));button.addEventListener('keydown',(event)=>{if(event.key==='Escape'){selectedInterest=null;renderGraph();}});const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.background=`${palette[item.id]}bf`;const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');button.append(key,node('span',item.label),count);row.append(button);list.append(row);});
+    data.network.nodes.forEach((item,i)=>{const row=node('li');const button=node('button',undefined,'network-choice');button.type='button';button.dataset.interest=item.id;button.setAttribute('aria-pressed','false');button.addEventListener('click',()=>chooseInterest(item.id));button.addEventListener('keydown',(event)=>{if(event.key==='Escape'){selectedInterest=null;renderGraph();}});const key=node('span',String(i+1).padStart(2,'0'),'node-key');key.style.background=palette[item.id];const count=node('strong',data.network.base?number(item.count):'—','node-count');count.setAttribute('aria-label',data.network.base?`Выборов: ${item.count}`:'Нет данных');button.append(key,node('span',item.label),count);row.append(button);list.append(row);});
+    const caption=document.querySelector('.network-caption');
+    if(caption) caption.replaceChildren(node('span','Круг — число выборов'),node('span','Дуга — доля ответов'),node('span','Линия — совместный выбор'),node('span','Цвета — как в списке интересов','caption-note'));
     const q=data.quality || {};
     const before=integer(q.beforeSelectionChange)?q.beforeSelectionChange:0;
 
@@ -164,18 +183,19 @@
     const graph=byId('network-svg').cloneNode(true);graph.setAttribute('x',0);graph.setAttribute('y',83);graph.setAttribute('width',480);graph.setAttribute('height',400);graph.setAttribute('role','img');
     // Export the complete graph at the active threshold, independent of UI focus.
     graph.querySelectorAll('.graph-node-halo, .graph-node-wave').forEach(item=>item.remove());
-    graph.querySelectorAll('.graph-edge').forEach((edge)=>edge.setAttribute('stroke-opacity',.48));
+    graph.querySelectorAll('.graph-edge').forEach((edge)=>edge.setAttribute('stroke-opacity',edge.getAttribute('data-base-opacity')));
+    graph.querySelectorAll('.pair-value').forEach((item)=>item.setAttribute('opacity',1));
     graph.querySelectorAll('.graph-node').forEach((item)=>{item.removeAttribute('class');item.removeAttribute('tabindex');item.removeAttribute('role');item.removeAttribute('aria-pressed');});
     graph.querySelector('desc').textContent=`Ответов: ${dataset.network.base}. Порог совместного выбора: ${byId('network-threshold').value}. Числа и названия интересов приведены ниже.`;exported.append(graph);
     let y=506;
     dataset.network.nodes.forEach((item,i)=>{
-      exported.append(svg('rect',{x:20,y:y-14,width:24,height:24,fill:palette[item.id],'fill-opacity':.75,stroke:'#171717','stroke-width':1.5}),text(24,y+2,String(i+1).padStart(2,'0'),11,700));
+      exported.append(svg('rect',{x:20,y:y-14,width:24,height:24,fill:palette[item.id],'fill-opacity':1,stroke:'#171717','stroke-width':1.5}),text(24,y+2,String(i+1).padStart(2,'0'),11,700));
       const words=item.label.split(' ');let line='';const lines=[];
       words.forEach((word)=>{if((line+' '+word).trim().length>49){lines.push(line);line=word;}else line=(line+' '+word).trim();});if(line)lines.push(line);
       lines.forEach((line,k)=>exported.append(text(54,y+k*14,line,12)));
       exported.append(text(438,y,String(item.count),13,700));y+=Math.max(30,lines.length*14+5);
     });
-    exported.append(text(20,752,'Круг — число выборов; линия — совместный выбор.',11),text(20,769,testMode?'Тестовый набор для демонстрации интерфейса.':'Предварительный срез добровольного опроса, не потоки людей.',10));
+    exported.append(text(20,752,'Круг — число выборов; дуга — доля; линия — выбор вместе.',11),text(20,769,testMode?'Тестовый набор для демонстрации интерфейса.':'Предварительный срез добровольного опроса, не потоки людей.',10));
     if(dataset.quality?.beforeSelectionChange) exported.append(text(20,786,`Анкет до отмены лимитов выбора: ${dataset.quality.beforeSelectionChange}.`,10));
     const blob=new Blob([new XMLSerializer().serializeToString(exported)],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob);const link=node('a');link.href=url;link.download=testMode?`expogorod-test-${dataset.network.base}-network.svg`:`expogorod-network-${dataset.sourceAsOf.slice(0,10)}.svg`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);

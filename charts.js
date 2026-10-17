@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const NS = 'http://www.w3.org/2000/svg';
-  const colors = ['#bcc6fb', '#9baafa', '#fe96c1', '#ee6da7', '#c6d875', '#9dae50', '#6978d9'];
+  const colors = ['#929EDC', '#A9CEDF', '#F19BC0', '#D5ACD7', '#DECE7B', '#B4CE7C', '#AAA0DD'];
   const format = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
   const number = (value) => format.format(value);
   const percent = (count, base) => base ? `${number(100 * count / base)}%` : '—';
@@ -115,7 +115,7 @@
       track.setAttribute('aria-hidden', 'true');
       const fill = html('span');
       fill.style.width = `${network.base ? 100 * item.count / network.base : 0}%`;
-      fill.style.backgroundColor = `${colors[index]}bf`;
+      fill.style.backgroundColor = colors[index];
       track.append(fill);
       const value = html('div', undefined, 'interest-bar-value');
       value.append(html('strong', `${number(item.count)} из ${number(network.base)}`), html('span', percent(item.count, network.base)));
@@ -138,7 +138,7 @@
       const length = circumference * segment.count / total;
       // A full-circumference gap prevents a second dash wrapping over the seam.
       graphic.append(svg('circle', {
-        cx: 130, cy: 130, r: 94, fill: 'none', stroke: segment.color, 'stroke-width': 31, 'stroke-opacity': .76,
+        cx: 130, cy: 130, r: 94, fill: 'none', stroke: segment.color, 'stroke-width': 31, 'stroke-opacity': 1,
         'stroke-dasharray': `${length} ${circumference}`,
         'stroke-dashoffset': -offset, transform: 'rotate(-90 130 130)'
       }));
@@ -154,7 +154,7 @@
   function legendRow(label, value, color, index) {
     const row = html('li');
     const swatch = html('span', index === undefined ? '' : key(index), 'chart-legend-swatch');
-    swatch.style.backgroundColor = `${color}bf`;
+    swatch.style.backgroundColor = color;
     swatch.setAttribute('aria-hidden', 'true');
     row.append(swatch, html('span', label), html('strong', value));
     return row;
@@ -164,12 +164,12 @@
     const target = mount('visit-donut');
     if (!target) return;
     const other = interested.base - interested.count;
-    const segments = [{ count: interested.count, color: '#bcc6fb' }, { count: other, color: '#e8e8e8' }];
+    const segments = [{ count: interested.count, color: colors[0] }, { count: other, color: '#e8e8e8' }];
     const content = html('div', undefined, 'chart-donut-layout');
     content.append(ring('visit-ring', segments, interested.base, `${number(interested.count)} / ${number(interested.base)}`, 'хотели бы приехать',
       `Хотели бы приехать: ${interested.count} из ${interested.base}, ${percent(interested.count, interested.base)}. Другие ответы: ${other}.`));
     const list = html('ul', undefined, 'chart-legend');
-    list.append(legendRow('Хотели бы приехать', `${number(interested.count)} · ${percent(interested.count, interested.base)}`, '#bcc6fb'),
+    list.append(legendRow('Хотели бы приехать', `${number(interested.count)} · ${percent(interested.count, interested.base)}`, colors[0]),
       legendRow('Другие ответы', `${number(other)} · ${percent(other, interested.base)}`, '#e8e8e8'));
     content.append(list);
     target.append(content, note(interested.base
@@ -229,7 +229,7 @@
   }
 
   // Data is validated by results.js before being passed to this presentation layer.
-  window.EXPO_CHARTS = Object.freeze({ validateMobility, summarize, networkThreshold, focusedEdges, render(data) {
+  window.EXPO_CHARTS = Object.freeze({ colors:Object.freeze(colors), validateMobility, summarize, networkThreshold, focusedEdges, render(data) {
     renderInsights(data);
     renderMobility(data);
     renderBars(data.network);

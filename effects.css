@@ -9,7 +9,7 @@
 .graph-node.is-selected, .graph-node:focus-visible { --node-glow-peak:.78; --node-wave-peak:.72; }
 /* Decorative circles breathe around the local origin; the count-sized disc stays still. */
 .graph-node-halo, .graph-node-wave { transform-origin:0 0; pointer-events:none; }
-.graph-node-halo { opacity:.18; }
+.graph-node-halo { opacity:.38; }
 .graph-node-wave { opacity:0; }
 .interest-bar:hover .interest-bar-track > span { filter:brightness(1.06); }
 .hero-orb { --orb-delay:0s; }
@@ -37,7 +37,7 @@
 .graph-node.is-muted .graph-node-halo, .graph-node.is-empty .graph-node-halo { opacity:.06; }
 .graph-node.is-muted .graph-node-wave, .graph-node.is-empty .graph-node-wave { opacity:0; }
 @keyframes expo-node-glow {
-  0%,12%,65%,100% { opacity:.14; transform:scale(.96); }
+  0%,12%,65%,100% { opacity:.3; transform:scale(.96); }
   32% { opacity:var(--node-glow-peak); transform:scale(1.12); }
 }
 @keyframes expo-node-wave {

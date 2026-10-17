@@ -150,3 +150,11 @@
 .network-mode-method{font-size:12px;line-height:1.6;color:var(--muted);margin:14px 20px}
 @media(max-width:900px){.network-toolbar{align-items:flex-start;flex-direction:column;gap:9px}.network-toolbar p{max-width:none}}
 @media(max-width:640px){.analytics-page .network-heading{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px}.network-heading .network-visible-count{font-size:11px}.network-toolbar{padding:10px}.network-modes{width:100%}.network-modes button{flex:1;font-size:12px;padding:10px 8px}.network-toolbar p{font-size:11px}}
+
+/* The data carries color; the surrounding panels stay neutral. */
+.analytics-page .metric,.insight-card,.insight-card:nth-child(2),.insight-card:nth-child(3){background:#f0f0f0}
+.network-canvas{background:linear-gradient(90deg,#c8c8c847 1px,transparent 1px),linear-gradient(#c8c8c847 1px,transparent 1px),#ededed;background-size:24px 24px,24px 24px}
+.network-choice:hover,.network-choice.is-selected{background:#f0f0f0}
+.node-share-arc,.node-share-track,.pair-value{pointer-events:none}
+.pair-value{font-variant-numeric:tabular-nums}
+@media(max-width:360px){.analytics-page .metric strong{font-size:24px;letter-spacing:0}.analytics-page .metric-label{font-size:7.5px;gap:4px}.analytics-page .metric-label .icon{width:11px;height:11px}}

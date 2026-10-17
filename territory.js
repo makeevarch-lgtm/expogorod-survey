@@ -39,10 +39,11 @@
     if(!ready)return;
     detail(null);tilted=tourStep!==0;$('gis-3d').setAttribute('aria-pressed',String(tilted));
     const padding=Math.max(30,Math.min(70,$('gis-map').clientWidth*.1));
+    const cityPadding=Math.max(42,Math.min(100,$('gis-map').clientWidth*.14));
     const duration=reduced?0:1050;
     if(tourStep===0){
       const bounds=[center,...catalog.items.map(i=>i.coordinates)].reduce((b,p)=>b.extend(p),new maplibregl.LngLatBounds());
-      map.fitBounds(bounds,{padding,pitch:0,bearing:0,duration,maxZoom:11});
+      map.fitBounds(bounds,{padding:cityPadding,pitch:0,bearing:0,duration,maxZoom:11});
     }else{
       const b=tourStep===2?railContext.metadata.focus_bbox:geography.metadata.ring_bbox;
       const bounds=new maplibregl.LngLatBounds([b[0],b[1]],[b[2],b[3]]);
@@ -51,6 +52,7 @@
         map.flyTo({center:[37.5506,55.5124],zoom:$('gis-map').clientWidth>700?14.3:13.75,pitch:35,bearing:0,duration});
       }else map.fitBounds(bounds,{padding,pitch:50,bearing:-20,duration,maxZoom:15.2});
     }
+    ['moscow-area','moscow-boundary-glow','moscow-boundary-line'].forEach(id=>map.setLayoutProperty(id,'visibility',tourStep===0?'visible':'none'));
     map.setPaintProperty('expo-rail-approach','line-width',['interpolate',['linear'],['zoom'],8,tourStep===2?2:1,15,tourStep===2?4:2.8]);
     map.setPaintProperty('expo-rail-approach','line-opacity',tourStep===2?1:.7);
     map.setPaintProperty('expo-rail-approach','line-dasharray',tourStep===2?[2,1.5]:[1,0]);
@@ -204,6 +206,11 @@
       try {
         const layers=map.getStyle().layers;const symbol=layers.find(l=>l.type==='symbol');
         minimalBasemap();
+        // Existing administrative boundary; the basemap palette stays unchanged.
+        map.addSource('moscow-boundary',{type:'geojson',data:'data/moscow-boundary.geojson?v=4.5',attribution:'Граница Москвы © OpenStreetMap contributors'});
+        map.addLayer({id:'moscow-area',source:'moscow-boundary',type:'fill',paint:{'fill-color':'#7185e9','fill-opacity':.12}},symbol?.id);
+        map.addLayer({id:'moscow-boundary-glow',source:'moscow-boundary',type:'line',layout:{'line-join':'round'},paint:{'line-color':'#657add','line-width':12,'line-opacity':.14,'line-blur':5}},symbol?.id);
+        map.addLayer({id:'moscow-boundary-line',source:'moscow-boundary',type:'line',layout:{'line-join':'round'},paint:{'line-color':'#5c70d4','line-width':['interpolate',['linear'],['zoom'],7,2,10,4],'line-opacity':.95}},symbol?.id);
         map.addSource('expo-ring',{type:'geojson',data:geography});
         map.addLayer({id:'expo-ring-area',type:'fill',source:'expo-ring',filter:['==',['get','kind'],'ring-area'],paint:{'fill-color':'#909bea','fill-opacity':.18}},layers.find(l=>l['source-layer']==='building')?.id||symbol?.id);
         map.addLayer({id:'expo-buildings',type:'fill-extrusion',source:'openmaptiles','source-layer':'building',minzoom:14,filter:['!=',['get','hide_3d'],true],paint:{'fill-extrusion-color':'#c4c4c4','fill-extrusion-height':['coalesce',['get','render_height'],0],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.85}},symbol?.id);
