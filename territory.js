@@ -43,7 +43,8 @@
     const duration=reduced?0:1050;
     if(tourStep===0){
       const bounds=[center,...catalog.items.map(i=>i.coordinates)].reduce((b,p)=>b.extend(p),new maplibregl.LngLatBounds());
-      map.fitBounds(bounds,{padding:cityPadding,pitch:55,bearing:-18,duration,maxZoom:11});
+      const camera=map.cameraForBounds(bounds,{padding:cityPadding,pitch:55,bearing:-18,maxZoom:11});
+      map.easeTo({...camera,zoom:Math.min(11,camera.zoom+.3),pitch:55,bearing:-18,duration});
     }else{
       const b=tourStep===2?railContext.metadata.focus_bbox:geography.metadata.ring_bbox;
       const bounds=new maplibregl.LngLatBounds([b[0],b[1]],[b[2],b[3]]);
