@@ -159,16 +159,16 @@
 .pair-value{font-variant-numeric:tabular-nums}
 @media(max-width:360px){.analytics-page .metric strong{font-size:24px;letter-spacing:0}.analytics-page .metric-label{font-size:7.5px;gap:4px}.analytics-page .metric-label .icon{width:11px;height:11px}}
 
-/* A full pie makes the relative popularity visible before the detail charts. */
-.popularity-panel{margin:24px 0;background:#f4f4f4}
+/* Radial sectors use the network’s grid, flat color, outlines and external halos. */
+.popularity-panel{margin:24px 0;background:#ededed}
 .popularity-heading{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px}
 .popularity-heading h2{font-size:20px;line-height:1.3;margin:0;letter-spacing:-.4px;text-transform:uppercase}
 .popularity-heading p{font-size:14px;line-height:1.5;margin:0;color:var(--muted)}
 .popularity-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:center;gap:36px}
-.popularity-pie{display:block;width:100%;max-width:500px;justify-self:center;overflow:visible;font-family:inherit;filter:drop-shadow(0 5px 12px #414cda15)}
-.popularity-sector{stroke:#f4f4f4;stroke-width:2;stroke-linejoin:round;transition:filter .2s,stroke .2s}
-.popularity-sector:hover,.popularity-sector:focus-visible{stroke:var(--ink);outline:none;filter:brightness(1.06)}
-.popularity-slice-label{font-size:21px;font-weight:700;fill:#171717;pointer-events:none}
+.popularity-pie{display:block;width:100%;max-width:500px;justify-self:center;overflow:visible;font-family:inherit;background:linear-gradient(90deg,#c8c8c847 1px,transparent 1px),linear-gradient(#c8c8c847 1px,transparent 1px),#ededed;background-size:24px 24px,24px 24px}
+.popularity-sector{stroke:#171717;stroke-width:1.8;stroke-linejoin:round;transition:fill-opacity .2s,stroke-width .2s}
+.popularity-sector:hover,.popularity-sector:focus-visible{stroke-width:3;fill-opacity:.88;outline:none}
+.popularity-slice-label{font-size:21px;font-weight:500;fill:#171717;pointer-events:none;paint-order:stroke;stroke:#ededed;stroke-width:5px;stroke-linejoin:round}
 .popularity-slice-percent{font-size:15px;font-weight:500}
 .popularity-legend{list-style:none;padding:0;margin:0;display:grid;gap:0}
 .popularity-legend li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #d5d5d5}
@@ -182,3 +182,7 @@
 @media(min-width:761px){#visit-donut .chart-donut-layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px}}
 @media(max-width:760px){.popularity-heading{display:block}.popularity-heading h2{font-size:18px}.popularity-heading p{margin-top:8px;font-size:13px}.popularity-layout{grid-template-columns:minmax(0,1fr);gap:10px}.popularity-pie{max-width:420px}.popularity-legend li{padding:10px 0;grid-template-columns:30px minmax(0,1fr) auto;gap:10px}.popularity-code{width:30px;height:30px}.popularity-name{font-size:14px}.popularity-value strong{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.popularity-sector{transition:none}}
+
+.popularity-track,.popularity-grid-ring,.popularity-halo{pointer-events:none}
+@media(prefers-reduced-motion:no-preference){.motion-ready .popularity-halo{animation:popularity-glow 7.6s ease-in-out var(--sector-delay,0s) infinite}}
+@keyframes popularity-glow{0%,12%,65%,100%{opacity:.22}32%{opacity:.48}}

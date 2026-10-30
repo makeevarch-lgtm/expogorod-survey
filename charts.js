@@ -211,37 +211,58 @@
       study: 'Учёба и профессиональные встречи'
     };
     const content = html('div', undefined, 'popularity-layout');
-    const graphic = svg('svg', { viewBox: '0 0 440 440', class: 'popularity-pie', role: 'img',
+    const graphic = svg('svg', { viewBox: '0 0 520 520', class: 'popularity-pie', role: 'img',
       'aria-labelledby': 'popularity-title popularity-desc' });
+    const maximumShare = Math.max(...ranked.map(item => 100 * item.count / total));
+    const scaleStep = Math.max(5, Math.ceil(maximumShare / 25) * 5);
+    const scaleMaximum = Math.ceil(maximumShare / scaleStep) * scaleStep;
     graphic.append(svg('title', { id: 'popularity-title' }, 'Популярность интересов'),
-      svg('desc', { id: 'popularity-desc' }, `Размер сектора — доля от ${total} выборов. ${ranked.map(item => `${item.label}: ${item.count}, ${percent(item.count, total)}`).join('. ')}.`));
+      svg('desc', { id: 'popularity-desc' }, `Равные сектора — интересы. Площадь заполнения показывает долю от ${total} выборов. Кольца — шаг ${scaleStep} процентных пунктов, внешнее кольцо — ${scaleMaximum}%. ${ranked.map(item => `${item.label}: ${item.count}, ${percent(item.count, total)}`).join('. ')}.`));
+    const defs = svg('defs');
+    const glow = svg('filter', { id: 'popularity-glow', x: '-100%', y: '-100%', width: '300%', height: '300%' });
+    glow.append(svg('feGaussianBlur', { stdDeviation: 10 })); defs.append(glow); graphic.append(defs);
     const choiceWord = count => count % 10 === 1 && count % 100 !== 11 ? 'выбор'
       : count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14) ? 'выбора' : 'выборов';
-    const radius = 194, cx = 220, cy = 220;
+    const radius = 190, cx = 260, cy = 260;
     const point = (angle, r = radius) => [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
-    let accumulated = 0;
-    ranked.filter(item => item.count > 0).forEach(item => {
-      const start = -Math.PI / 2 + 2 * Math.PI * accumulated / total;
-      accumulated += item.count;
-      const end = -Math.PI / 2 + 2 * Math.PI * accumulated / total;
-      const attrs = { fill: colors[item.index], class: 'popularity-sector',
-        'data-interest': item.id, 'data-count': item.count, tabindex: 0,
+    const step = 2 * Math.PI / ranked.length;
+    const wedge = (start, end, r) => `M ${cx} ${cy} L ${point(start,r).join(' ')} A ${r} ${r} 0 ${end-start > Math.PI ? 1 : 0} 1 ${point(end,r).join(' ')} Z`;
+    const labels = [];
+    ranked.forEach((item, position) => {
+      const start = -Math.PI / 2 + position * step;
+      const end = start + step;
+      const share = 100 * item.count / total;
+      // Equal angles and square-root radii keep filled area proportional to count.
+      const filledRadius = radius * Math.sqrt(share / scaleMaximum);
+      const common = { 'data-interest': item.id, 'data-count': item.count,
+        'data-radius': filledRadius, 'data-start': start, 'data-end': end,
+        'data-share': share, 'data-scale': scaleMaximum, tabindex: 0,
         'aria-label': `${item.label}: ${item.count} выборов, ${percent(item.count, total)}` };
-      let sector;
-      if (item.count === total) sector = svg('circle', { ...attrs, cx, cy, r: radius });
-      else sector = svg('path', { ...attrs,
-        d: `M ${cx} ${cy} L ${point(start).join(' ')} A ${radius} ${radius} 0 ${item.count > total / 2 ? 1 : 0} 1 ${point(end).join(' ')} Z` });
-      sector.append(svg('title', {}, attrs['aria-label']));
-      graphic.append(sector);
-      // Tiny slices keep their complete labels in the adjacent list.
-      if (item.count / total >= .04) {
-        const [x, y] = point((start + end) / 2, radius * .7);
-        const label = svg('text', { x, y: y - 3, class: 'popularity-slice-label', 'text-anchor': 'middle', 'aria-hidden': 'true' });
-        label.append(svg('tspan', { x }, key(item.index)),
-          svg('tspan', { x, dy: 21, class: 'popularity-slice-percent' }, percent(item.count, total)));
-        graphic.append(label);
+      graphic.append(svg('path', { d: wedge(start,end,radius), fill: colors[item.index], 'fill-opacity': .07, class: 'popularity-track', 'aria-hidden': 'true' }));
+      if (item.count) {
+        const path = wedge(start,end,filledRadius);
+        graphic.append(svg('path', { d: path, fill: colors[item.index], filter: 'url(#popularity-glow)', opacity: .36,
+          class: 'popularity-halo', style: `--sector-delay:${-position*.85}s`, 'aria-hidden': 'true' }));
+        const sector = svg('path', { ...common, d: path, fill: colors[item.index], 'fill-opacity': .7, class: 'popularity-sector' });
+        sector.append(svg('title', {}, common['aria-label'])); graphic.append(sector);
       }
+      const [x,y] = point((start+end)/2, radius+41);
+      const label = svg('text', { x, y:y-3, class:'popularity-slice-label', 'text-anchor':'middle', 'aria-hidden':'true' });
+      label.append(svg('tspan', {x}, key(item.index)), svg('tspan', {x,dy:20,class:'popularity-slice-percent'}, percent(item.count,total)));
+      labels.push(label);
     });
+    // Rings remain visible through every fill and encode a common area scale.
+    for (let tick=scaleStep; tick<=scaleMaximum; tick+=scaleStep) {
+      const r=radius*Math.sqrt(tick/scaleMaximum);
+      graphic.append(svg('circle', { cx,cy,r,fill:'none',stroke:'#67718f', 'stroke-opacity':tick===scaleMaximum?.55:.28,
+        'stroke-width':tick===scaleMaximum?1.1:.8, class:'popularity-grid-ring', 'data-level':tick, 'aria-hidden':'true' }));
+    }
+    for(let i=0;i<ranked.length;i++) {
+      graphic.append(svg('path', { d:`M ${cx} ${cy} L ${point(-Math.PI/2+i*step).join(' ')}`,fill:'none',stroke:'#171717','stroke-opacity':.35,'stroke-width':.8,'aria-hidden':'true' }));
+    }
+    graphic.append(svg('circle',{cx,cy,r:radius+8,fill:'none',stroke:'#999','stroke-width':1,'stroke-dasharray':'3 6','aria-hidden':'true'}),
+      svg('path',{d:'M17 27h20m-10-10v20M483 493h20m-10-10v20',stroke:'#171717','stroke-width':1,'aria-hidden':'true'}),
+      svg('circle',{cx,cy,r:3.5,fill:'#171717','aria-hidden':'true'}), ...labels);
     const side = html('div', undefined, 'popularity-key');
     const list = html('ol', undefined, 'popularity-legend');
     ranked.forEach(item => {
@@ -257,7 +278,7 @@
       row.append(code, label, value); list.append(row);
     });
     const base = html('p', undefined, 'popularity-base');
-    base.append(html('strong', `${number(total)} ${choiceWord(total)}`), html('span', `в ${number(network.base)} ответах · можно выбрать несколько интересов`));
+    base.append(html('strong', `${number(total)} ${choiceWord(total)}`), html('span', `в ${number(network.base)} ответах · можно выбрать несколько интересов`), html('span', `Площадь заполнения — доля выборов. Кольца: шаг ${scaleStep}%, край — ${scaleMaximum}%.`));
     side.append(list, base);
     content.append(graphic, side);
     target.append(content);
