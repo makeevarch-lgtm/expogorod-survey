@@ -193,6 +193,76 @@
       : 'Конкретные интересы пока не выбраны — распределение появится после первых отметок.'));
   }
 
+  function renderPopularity(network) {
+    const target = mount('interest-popularity');
+    if (!target) return;
+    const total = network.nodes.reduce((sum, item) => sum + item.count, 0);
+    if (!total) {
+      target.append(html('p', 'Пока нет выбранных интересов. Диаграмма появится вместе с ответами.'));
+      return;
+    }
+    // Rank by count, preserving the original network codes and colors.
+    const ranked = network.nodes.map((item, index) => ({ ...item, index }))
+      .sort((a, b) => b.count - a.count || a.index - b.index);
+    const shortNames = {
+      technique: 'Техника в действии', science: 'Научная выставка',
+      events: 'Выставки и фестивали', workshops: 'Лекции и мастер-классы',
+      sport: 'Спорт и соревнования', park: 'Прогулка в лесопарке',
+      study: 'Учёба и профессиональные встречи'
+    };
+    const content = html('div', undefined, 'popularity-layout');
+    const graphic = svg('svg', { viewBox: '0 0 440 440', class: 'popularity-pie', role: 'img',
+      'aria-labelledby': 'popularity-title popularity-desc' });
+    graphic.append(svg('title', { id: 'popularity-title' }, 'Популярность интересов'),
+      svg('desc', { id: 'popularity-desc' }, `Размер сектора — доля от ${total} выборов. ${ranked.map(item => `${item.label}: ${item.count}, ${percent(item.count, total)}`).join('. ')}.`));
+    const choiceWord = count => count % 10 === 1 && count % 100 !== 11 ? 'выбор'
+      : count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14) ? 'выбора' : 'выборов';
+    const radius = 194, cx = 220, cy = 220;
+    const point = (angle, r = radius) => [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
+    let accumulated = 0;
+    ranked.filter(item => item.count > 0).forEach(item => {
+      const start = -Math.PI / 2 + 2 * Math.PI * accumulated / total;
+      accumulated += item.count;
+      const end = -Math.PI / 2 + 2 * Math.PI * accumulated / total;
+      const attrs = { fill: colors[item.index], class: 'popularity-sector',
+        'data-interest': item.id, 'data-count': item.count, tabindex: 0,
+        'aria-label': `${item.label}: ${item.count} выборов, ${percent(item.count, total)}` };
+      let sector;
+      if (item.count === total) sector = svg('circle', { ...attrs, cx, cy, r: radius });
+      else sector = svg('path', { ...attrs,
+        d: `M ${cx} ${cy} L ${point(start).join(' ')} A ${radius} ${radius} 0 ${item.count > total / 2 ? 1 : 0} 1 ${point(end).join(' ')} Z` });
+      sector.append(svg('title', {}, attrs['aria-label']));
+      graphic.append(sector);
+      // Tiny slices keep their complete labels in the adjacent list.
+      if (item.count / total >= .04) {
+        const [x, y] = point((start + end) / 2, radius * .7);
+        const label = svg('text', { x, y: y - 3, class: 'popularity-slice-label', 'text-anchor': 'middle', 'aria-hidden': 'true' });
+        label.append(svg('tspan', { x }, key(item.index)),
+          svg('tspan', { x, dy: 21, class: 'popularity-slice-percent' }, percent(item.count, total)));
+        graphic.append(label);
+      }
+    });
+    const side = html('div', undefined, 'popularity-key');
+    const list = html('ol', undefined, 'popularity-legend');
+    ranked.forEach(item => {
+      const row = html('li');
+      row.setAttribute('data-interest', item.id);
+      const code = html('span', key(item.index), 'popularity-code');
+      code.style.backgroundColor = colors[item.index];
+      code.setAttribute('aria-hidden', 'true');
+      const label = html('span', shortNames[item.id] || item.label, 'popularity-name');
+      label.setAttribute('title', item.label);
+      const value = html('span', undefined, 'popularity-value');
+      value.append(html('strong', percent(item.count, total)), html('span', `${number(item.count)} ${choiceWord(item.count)}`));
+      row.append(code, label, value); list.append(row);
+    });
+    const base = html('p', undefined, 'popularity-base');
+    base.append(html('strong', `${number(total)} ${choiceWord(total)}`), html('span', `в ${number(network.base)} ответах · можно выбрать несколько интересов`));
+    side.append(list, base);
+    content.append(graphic, side);
+    target.append(content);
+  }
+
   function renderMatrix(network) {
     const target = mount('interest-matrix');
     if (!target) return;
@@ -235,6 +305,7 @@
     renderBars(data.network);
     renderVisit(data.interested);
     renderShare(data.network);
+    renderPopularity(data.network);
     renderMatrix(data.network);
   } });
 })();

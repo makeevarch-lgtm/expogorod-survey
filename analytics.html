@@ -8,8 +8,8 @@
   <title>Аналитика — Экспогород</title>
   <link rel="icon" href="assets/mark.svg?v=4.0" type="image/svg+xml">
   <link rel="stylesheet" href="style.css?v=4.0">
-  <link rel="stylesheet" href="charts.css?v=4.5"><link rel="stylesheet" href="effects.css?v=4.5">
-  <script src="charts.js?v=4.5" defer></script>
+  <link rel="stylesheet" href="charts.css?v=4.6"><link rel="stylesheet" href="effects.css?v=4.5">
+  <script src="charts.js?v=4.6" defer></script>
   <script src="test-mode.js?v=4.0" defer></script><script src="motion.js?v=4.4" defer></script>
   <script src="results.js?v=4.5" defer></script>
 </head>
@@ -41,11 +41,14 @@
         <div class="network-layout"><div class="network-canvas"><svg id="network-svg" viewBox="0 0 480 400" role="group" aria-labelledby="network-svg-title network-svg-desc"><title id="network-svg-title">Связи между поводами приехать</title><desc id="network-svg-desc">Данные загружаются.</desc></svg><div id="network-empty" class="network-empty"><span class="empty-symbol" aria-hidden="true">＋</span><strong>Схема появится вместе с ответами</strong><p>Каждый интерес станет узлом.<br>Совместный выбор — связью.</p></div></div><div class="network-key"><h4>Поводы приехать</h4><p id="network-base" class="network-base">Ожидаем данные</p><ol id="network-nodes" class="network-nodes"></ol><div class="network-selection"><button id="network-reset" class="network-reset" type="button" disabled>Сбросить выбор ↺</button><p id="network-selected" role="status" aria-live="polite"></p><ul id="network-connections" class="network-connections"></ul></div></div></div>
         <div class="network-caption"><span><i class="swatch science"></i> Познание</span><span><i class="swatch events"></i> События</span><span><i class="swatch nature"></i> Активный отдых</span><span class="caption-note">Граф интересов · не карта маршрутов</span></div>
       </div>
+      <section class="chart-panel popularity-panel" data-reveal aria-labelledby="popularity-heading">
+        <div class="popularity-heading"><h2 id="popularity-heading">02 / Популярность интересов</h2><p>Чем больше сектор, тем чаще выбирают интерес.</p></div>
+        <div id="interest-popularity"><p>Загружаем распределение интересов…</p></div>
+      </section>
       <section id="research-insights" class="research-insights" aria-labelledby="insights-title"><h2 id="insights-title">Что выбрали участники</h2><div id="insight-cards" class="insight-cards"><p>Наблюдения появятся после проверки данных.</p></div><details class="insight-method"><summary>Что это значит для проекта</summary><p id="project-hypothesis" class="project-hypothesis"></p></details></section>
       <section class="chart-grid" aria-label="Диаграммы исследования">
-        <article class="chart-panel chart-panel-wide"><h3>02 / Поводы приехать</h3><p>Можно выбрать несколько вариантов.</p><div id="interest-bars"><p>Ожидаем данные среза.</p></div></article>
-        <article class="chart-panel"><h3>03 / Желание приехать</h3><p></p><div id="visit-donut"><p>Ожидаем данные среза.</p></div></article>
-        <article class="chart-panel"><h3>04 / Состав выбранных интересов</h3><p>Доли среди выбранных интересов.</p><div id="choice-share"><p>Ожидаем данные среза.</p></div></article>
+        <article class="chart-panel chart-panel-wide"><h3>03 / Поводы приехать</h3><p>Можно выбрать несколько вариантов.</p><div id="interest-bars"><p>Ожидаем данные среза.</p></div></article>
+        <article class="chart-panel chart-panel-wide"><h3>04 / Желание приехать</h3><p></p><div id="visit-donut"><p>Ожидаем данные среза.</p></div></article>
         <article class="chart-panel chart-panel-wide"><h3>05 / Матрица совместного выбора</h3><p>Совместный выбор · коды как на графе.</p><div id="interest-matrix"><p>Ожидаем данные среза.</p></div></article>
       </section>
       <section id="mobility" class="mobility-section" aria-labelledby="mobility-title"><h2 id="mobility-title">Как добраться — тоже важно</h2><p class="mobility-intro">Время в пути, транспорт и пешая доступность.</p><div id="mobility-charts" class="mobility-charts"><p>Данные о доступности пока не загружены.</p></div></section>
